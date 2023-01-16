@@ -1,0 +1,14 @@
+{
+  "name": "dice-reverse",
+  "version": "1.0.0",
+  "description": "dice board game reverse engineering",
+  "dependencies": {
+    "parcel": "2.8.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "parcel src/index.html"
+  },
+  "author": "",
+  "license": "ISC"
+}
