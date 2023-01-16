@@ -5,9 +5,16 @@
   "dependencies": {
     "parcel": "2.8.2"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@parcel/transformer-sass": "2.8.2",
+    "eslint": "7.32.0",
+    "eslint-config-airbnb-base": "14.2.1",
+    "eslint-plugin-import": "2.25.2",
+    "nodemon": "2.0.13"
+  },
   "scripts": {
-    "start": "parcel src/index.html"
+    "start": "parcel src/index.html",
+    "lint": "nodemon --exec eslint src/**/*.{js,jsx}"
   },
   "author": "",
   "license": "ISC"
