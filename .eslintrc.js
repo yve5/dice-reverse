@@ -16,5 +16,6 @@ module.exports = {
     'operator-linebreak': ['error', 'after'],
     'no-console': ['warn', { allow: ['warn', 'error'] }],
     'implicit-arrow-linebreak': 'off',
+    'linebreak-style': 'off',
   },
 };

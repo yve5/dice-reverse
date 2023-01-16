@@ -1,76 +1,81 @@
-var canvas, stage;
-var builder;
-var touchdev = false;
+let canvas;
+let stage;
+let builder;
+let touchdev = false;
 
 // event function
-var timer_func = new Function();
-timer_func = null;
-var click_func = new Function();
-click_func = null;
-var move_func = new Function();
-move_func = null;
-var release_func = new Function();
-release_func = null;
-var waitcount = 0;
-var stat = 0;
+let timerFunc = new Function();
+timerFunc = null;
+
+let clickFunc = new Function();
+clickFunc = null;
+
+let moveFunc = new Function();
+moveFunc = null;
+
+let releaseFunc = new Function();
+releaseFunc = null;
+
+let waitcount = 0;
+let stat = 0;
 
 // game object
-var game = new Game();
+let game = new Game();
 
 // Display position
-var org = {
-  view_w: 840,
-  view_h: 840,
-  cel_w: 27,
-  cel_h: 18,
-  ypos_mes: 688,
-  ypos_arm: 770,
+let org = {
+  viewW: 840,
+  viewH: 840,
+  celW: 27,
+  celH: 18,
+  yposMes: 688,
+  yposArm: 770,
 }; // Original Size
 
-var nume = 1;
-var deno = 1;
-var view_w, view_h;
-var cel_w, cel_h; // The size of the card and
-var ypos_mes; // Message, location of battle dice
-var ypos_arm; // Status display position for each army
-var dot; // Size of 1 dot
+let nume = 1;
+let deno = 1;
+let viewW, viewH;
+let celW, celH; // The size of the card and
+let yposMes; // Message, location of battle dice
+let yposArm; // Status display position for each army
+let dot; // Size of 1 dot
 
 // Cell drawing position
-var cpos_x = new Array();
-var cpos_y = new Array();
+let cposX = new Array();
+let cposY = new Array();
 
 // Sprite
-var spr = new Array();
+let spr = new Array();
 
 // Sprite Number
-var sn_area = 0;
-var sn_from = 0; // Sprite number of the attack source area
-var sn_to = 0; // Sprite number of the attack target area
-var sn_dice = 0;
-var sn_info = 0;
-var sn_ban = 0;
-var sn_player = 0;
-var sn_battle = 0;
-var sn_supply = 0;
-var sn_gameover = 0;
-var sn_win = 0;
-var sn_title = 0;
-var sn_pmax = 0;
-var sn_load = 0;
-var sn_mes = 0;
-var sn_btn = 0;
-var sn_max = 0; // Maximum number
+let snArea = 0;
+let snFrom = 0; // Sprite number of the attack source area
+let snTo = 0; // Sprite number of the attack target area
+let snDice = 0;
+let snInfo = 0;
+let snBan = 0;
+let snPlayer = 0;
+let snBattle = 0;
+let snSupply = 0;
+let snGameover = 0;
+let snWin = 0;
+let snTitle = 0;
+let snPmax = 0;
+let snLoad = 0;
+let snMes = 0;
+let snBtn = 0;
+let snMax = 0; // Maximum number
 
-var prio = new Array(); // Display order of area dice
-var an2sn = new Array(); // Returns the dice sprite number from the area number
+let prio = new Array(); // Display order of area dice
+let an2sn = new Array(); // Returns the dice sprite number from the area number
 
 // button
-var bmax = 0;
-var activebutton = -1;
-var btn_func = new Array();
+let bmax = 0;
+let activebutton = -1;
+let btnFunc = new Array();
 
 // battle class
-var Battle = function () {
+let Battle = function () {
   this.dn = 0; // Dice number (position to stop)
   this.arm = 0; // Dice color
   this.dmax = 0; // Number of Dice
@@ -79,25 +84,31 @@ var Battle = function () {
   this.fin = [0, 0, 0, 0, 0, 0, 0, 0]; // end flag
   this.usedice = [0, 1, 2, 3, 4, 5, 6, 7]; // Dice to use
 };
-var battle = new Array();
-var bturn = 0; // Turn for Battle
+
+let battle = new Array();
+let bturn = 0; // Turn for Battle
 
 // For replaying history
-var replay_c = 0;
+let replayC = 0;
 
 // Sound related
-// var soundon = true;
-var soundon = false;
-var manifest = [
-  { src: "./sound/button.wav", id: "snd_button" },
-  { src: "./sound/clear.wav", id: "snd_clear" },
-  { src: "./sound/click.wav", id: "snd_click" },
-  { src: "./sound/dice.wav", id: "snd_dice" },
-  { src: "./sound/fail.wav", id: "snd_fail" },
-  { src: "./sound/myturn.wav", id: "snd_myturn" },
-  { src: "./sound/over.wav", id: "snd_over" },
-  { src: "./sound/success.wav", id: "snd_success" },
+// let soundon = true;
+let soundon = false;
+let manifest = [
+  { src: './sound/button.wav', id: 'snd_button' },
+  { src: './sound/clear.wav', id: 'snd_clear' },
+  { src: './sound/click.wav', id: 'snd_click' },
+  { src: './sound/dice.wav', id: 'snd_dice' },
+  { src: './sound/fail.wav', id: 'snd_fail' },
+  { src: './sound/myturn.wav', id: 'snd_myturn' },
+  { src: './sound/over.wav', id: 'snd_over' },
+  { src: './sound/success.wav', id: 'snd_success' },
 ];
+
+// Link
+const toppage = () => {
+  location.href = 'https://www.gamedesign.jp/';
+};
 
 // Resize to scale
 function resize(n) {
@@ -105,11 +116,12 @@ function resize(n) {
 }
 
 // launch
-window.addEventListener("load", init);
-function init() {
-  var i, j, c, n;
+window.addEventListener('load', init);
 
-  canvas = document.getElementById("myCanvas");
+function init() {
+  let i, j, c, n;
+
+  canvas = document.getElementById('myCanvas');
   stage = new createjs.Stage(canvas);
 
   if (createjs.Touch.isSupported() == true) {
@@ -123,283 +135,283 @@ function init() {
   }
 
   // Indicates location
-  var iw = window.innerWidth;
-  var ih = window.innerHeight;
-  if (iw / org.view_w < ih / org.view_h) {
+  let iw = window.innerWidth;
+  let ih = window.innerHeight;
+  if (iw / org.viewW < ih / org.viewH) {
     nume = iw;
-    deno = org.view_w;
+    deno = org.viewW;
   } else {
     nume = ih;
-    deno = org.view_h;
+    deno = org.viewH;
   }
-  view_w = Math.floor((org.view_w * nume) / deno);
-  view_h = Math.floor((org.view_h * nume) / deno);
-  stage.canvas.width = view_w;
-  stage.canvas.height = view_h;
-  cel_w = (org.cel_w * nume) / deno;
-  cel_h = (org.cel_h * nume) / deno;
-  ypos_mes = (org.ypos_mes * nume) / deno;
-  ypos_arm = (org.ypos_arm * nume) / deno;
+  viewW = Math.floor((org.viewW * nume) / deno);
+  viewH = Math.floor((org.viewH * nume) / deno);
+  stage.canvas.width = viewW;
+  stage.canvas.height = viewH;
+  celW = (org.celW * nume) / deno;
+  celH = (org.celH * nume) / deno;
+  yposMes = (org.yposMes * nume) / deno;
+  yposArm = (org.yposArm * nume) / deno;
   dot = (1 * nume) / deno;
-  for (i = 0; i < 2; i++) battle[i] = new Battle();
+  for (i = 0; i < 2; i += 1) battle[i] = new Battle();
 
   // Sprite Number
-  var sn = 0;
+  let sn = 0;
 
   // Cell position
   c = 0;
-  for (i = 0; i < game.YMAX; i++) {
-    for (j = 0; j < game.XMAX; j++) {
-      cpos_x[c] = j * cel_w;
-      if (i % 2) cpos_x[c] += cel_w / 2;
-      cpos_y[c] = i * cel_h;
-      c++;
+  for (i = 0; i < game.YMAX; i += 1) {
+    for (j = 0; j < game.XMAX; j += 1) {
+      cposX[c] = j * celW;
+      if (i % 2) cposX[c] += celW / 2;
+      cposY[c] = i * celH;
+      c += 1;
     }
   }
 
   // Area drawing +2 (attack source and destination)
-  sn_area = sn;
-  for (i = 0; i < game.AREA_MAX + 2; i++) {
+  snArea = sn;
+  for (i = 0; i < game.AREA_MAX + 2; i += 1) {
     spr[sn] = new createjs.Shape();
-    spr[sn].x = view_w / 2 - (game.XMAX * cel_w) / 2 - cel_w / 4;
+    spr[sn].x = viewW / 2 - (game.XMAX * celW) / 2 - celW / 4;
     spr[sn].y = (50 * nume) / deno;
     stage.addChild(spr[sn]);
-    sn++;
+    sn += 1;
   }
-  sn_from = sn_area + game.AREA_MAX; // Sprite number of the attack source area
-  sn_to = sn_area + game.AREA_MAX + 1; // Sprite number of the attack target area
+  snFrom = snArea + game.AREA_MAX; // Sprite number of the attack source area
+  snTo = snArea + game.AREA_MAX + 1; // Sprite number of the attack target area
 
   // area dice
-  sn_dice = sn;
+  snDice = sn;
   builder = new createjs.SpriteSheetBuilder();
-  var mc = new lib.areadice();
-  var rect = new createjs.Rectangle(0, 0, 80, 100);
+  let mc = new lib.areadice();
+  let rect = new createjs.Rectangle(0, 0, 80, 100);
   builder.addMovieClip(mc, rect, nume / deno);
-  var spritesheet = builder.build();
-  for (i = 0; i < game.AREA_MAX; i++) {
+  let spritesheet = builder.build();
+  for (i = 0; i < game.AREA_MAX; i += 1) {
     spr[sn] = new createjs.Sprite(spritesheet);
     stage.addChild(spr[sn]);
-    sn++;
+    sn += 1;
   }
 
   // Area Dice Display Order
-  for (i = 0; i < game.AREA_MAX; i++) {
+  for (i = 0; i < game.AREA_MAX; i += 1) {
     prio[i] = new Object();
     prio[i].an = i;
     prio[i].cpos = 0; // For later
   }
 
   // Sprite numbers other than the map (to delete them all at once)
-  sn_info = sn;
+  snInfo = sn;
 
   // player state
-  sn_ban = sn;
+  snBan = sn;
   spr[sn] = new lib.mc();
   stage.addChild(spr[sn]);
   spr[sn].scaleX = nume / deno;
   spr[sn].scaleY = nume / deno;
-  sn++;
-  sn_player = sn;
-  for (i = 0; i < 8; i++) {
-    var pd = new lib.mc();
+  sn += 1;
+  snPlayer = sn;
+  for (i = 0; i < 8; i += 1) {
+    let pd = new lib.mc();
     pd.scaleX = pd.scaleY = 0.12;
     pd.x = -22;
     pd.y = 0;
     spr[sn] = new createjs.Container();
     spr[sn].addChildAt(pd, 0);
-    var txt = new createjs.Text("", "32px Anton", "Black");
-    txt.textBaseline = "middle";
+    let txt = new createjs.Text('', '32px Anton', 'Black');
+    txt.textBaseline = 'middle';
     txt.x = 5;
     spr[sn].addChildAt(txt, 1);
-    var txt2 = new createjs.Text("", "16px Anton", "Black");
-    txt2.textBaseline = "middle";
+    let txt2 = new createjs.Text('', '16px Anton', 'Black');
+    txt2.textBaseline = 'middle';
     txt2.x = 5;
     txt2.y = 28;
     spr[sn].addChildAt(txt2, 2);
     stage.addChild(spr[sn]);
     spr[sn].scaleX = nume / deno;
     spr[sn].scaleY = nume / deno;
-    sn++;
+    sn += 1;
   }
 
   // battle dice
-  sn_battle = sn;
+  snBattle = sn;
   spr[sn] = new createjs.Container();
-  spr[sn].y = ypos_mes;
-  spr[sn].x = view_w / 2;
+  spr[sn].y = yposMes;
+  spr[sn].x = viewW / 2;
   spr[sn].scaleX = spr[sn].scaleY = nume / deno;
-  var bgshape = new createjs.Shape();
+  let bgshape = new createjs.Shape();
   bgshape.graphics
-    .beginFill("rgba(255,255,255,0.8)")
-    .drawRect(-org.view_w / 2, -50, org.view_w, 360);
+    .beginFill('rgba(255,255,255,0.8)')
+    .drawRect(-org.viewW / 2, -50, org.viewW, 360);
   spr[sn].addChild(bgshape);
-  for (i = 0; i < 2; i++) {
-    for (j = 0; j < 8; j++) {
-      var bs = new lib.mc();
+  for (i = 0; i < 2; i += 1) {
+    for (j = 0; j < 8; j += 1) {
+      let bs = new lib.mc();
       bs.scaleX = bs.scaleY = 0.15;
-      bs.name = "s" + i + j;
+      bs.name = 's' + i + j;
       spr[sn].addChild(bs);
     }
-    for (j = 0; j < 8; j++) {
-      var bd = new lib.mc();
+    for (j = 0; j < 8; j += 1) {
+      let bd = new lib.mc();
       bd.scaleX = bd.scaleY = 0.15;
-      bd.name = "d" + i + j;
+      bd.name = 'd' + i + j;
       spr[sn].addChild(bd);
     }
-    var txt = new createjs.Text("37", "80px Anton", "Black");
-    txt.textBaseline = "middle";
-    txt.textAlign = "center";
-    txt.name = "n" + i;
+    let txt = new createjs.Text('37', '80px Anton', 'Black');
+    txt.textBaseline = 'middle';
+    txt.textAlign = 'center';
+    txt.name = 'n' + i;
     spr[sn].addChild(txt);
   }
   stage.addChild(spr[sn]);
-  sn++;
+  sn += 1;
 
   // Supply dices
-  sn_supply = sn;
+  snSupply = sn;
   spr[sn] = new createjs.Container();
-  spr[sn].y = ypos_mes;
-  spr[sn].x = view_w / 2;
+  spr[sn].y = yposMes;
+  spr[sn].x = viewW / 2;
   spr[sn].scaleX = spr[sn].scaleY = nume / deno;
-  for (i = 0; i < game.STOCK_MAX; i++) {
-    var sd = new lib.mc();
-    var w = 40;
+  for (i = 0; i < game.STOCK_MAX; i += 1) {
+    let sd = new lib.mc();
+    let w = 40;
     sd.x = -(6.5 * w) + Math.floor(i / 4) * w - (i % 4) * w * 0.5;
     sd.y = -w * 0.7 + (Math.floor(i % 4) * w) / 2;
-    sd.gotoAndStop("d00");
+    sd.gotoAndStop('d00');
     sd.scaleX = sd.scaleY = 0.1;
     spr[sn].addChildAt(sd, i);
   }
   stage.addChild(spr[sn]);
-  sn++;
+  sn += 1;
 
   // Gameover
-  sn_gameover = sn;
+  snGameover = sn;
   spr[sn] = new createjs.Container();
-  spr[sn].x = view_w / 2;
-  spr[sn].y = view_h / 2;
+  spr[sn].x = viewW / 2;
+  spr[sn].y = viewH / 2;
   spr[sn].scaleX = spr[sn].scaleY = nume / deno;
-  var goshape = new createjs.Shape();
+  let goshape = new createjs.Shape();
   goshape.graphics
-    .beginFill("#000000")
-    .drawRect(-org.view_w / 2 + 10, -180, org.view_w - 20, 360);
-  goshape.name = "bg";
+    .beginFill('#000000')
+    .drawRect(-org.viewW / 2 + 10, -180, org.viewW - 20, 360);
+  goshape.name = 'bg';
   spr[sn].addChild(goshape);
-  var gotext = new createjs.Text("G A M E O V E R", "80px Anton", "White");
-  gotext.textBaseline = "middle";
-  gotext.textAlign = "center";
-  gotext.name = "mes";
+  let gotext = new createjs.Text('G A M E O V E R', '80px Anton', 'White');
+  gotext.textBaseline = 'middle';
+  gotext.textAlign = 'center';
+  gotext.name = 'mes';
   spr[sn].addChild(gotext);
   stage.addChild(spr[sn]);
-  sn++;
+  sn += 1;
 
   // You Win
-  sn_win = sn;
+  snWin = sn;
   spr[sn] = new lib.mc();
   spr[sn].scaleX = spr[sn].scaleY = nume / deno;
   stage.addChild(spr[sn]);
-  sn++;
+  sn += 1;
 
   // Title screen
-  sn_title = sn;
+  snTitle = sn;
   spr[sn] = new lib.mc();
   spr[sn].scaleX = spr[sn].scaleY = nume / deno;
   stage.addChild(spr[sn]);
-  sn++;
+  sn += 1;
 
   // Number of players setting
-  sn_pmax = sn;
+  snPmax = sn;
   spr[sn] = new createjs.Container();
-  for (i = 0; i < 7; i++) {
-    var ptxt = new createjs.Text(
-      i + 2 + " players",
-      Math.floor((32 * nume) / deno) + "px Anton",
-      "#aaaaaa"
+  for (i = 0; i < 7; i += 1) {
+    let ptxt = new createjs.Text(
+      i + 2 + ' players',
+      Math.floor((32 * nume) / deno) + 'px Anton',
+      '#aaaaaa'
     );
-    ptxt.name = "p" + i;
+    ptxt.name = 'p' + i;
     ptxt.x =
-      view_w / 2 -
+      viewW / 2 -
       (280 * nume) / deno +
       Math.floor(i % 4) * ((180 * nume) / deno);
-    ptxt.y = view_h * 0.8 + Math.floor(i / 4) * ((60 * nume) / deno);
-    ptxt.textAlign = "center";
-    ptxt.textBaseline = "middle";
+    ptxt.y = viewH * 0.8 + Math.floor(i / 4) * ((60 * nume) / deno);
+    ptxt.textAlign = 'center';
+    ptxt.textBaseline = 'middle';
     spr[sn].addChild(ptxt);
   }
   stage.addChild(spr[sn]);
-  sn++;
+  sn += 1;
 
   // For loading (to read web fonts)
-  sn_load = sn;
+  snLoad = sn;
   spr[sn] = new createjs.Text(
-    "Now loading...",
-    Math.floor((24 * nume) / deno) + "px Anton",
-    "#000000"
+    'Now loading...',
+    Math.floor((24 * nume) / deno) + 'px Anton',
+    '#000000'
   );
   stage.addChild(spr[sn]);
-  sn++;
+  sn += 1;
 
   // generic message
-  sn_mes = sn;
+  snMes = sn;
   spr[sn] = new createjs.Text(
-    "Now loading...",
-    Math.floor((30 * nume) / deno) + "px Roboto",
-    "#000000"
+    'Now loading...',
+    Math.floor((30 * nume) / deno) + 'px Roboto',
+    '#000000'
   );
-  spr[sn].textAlign = "center";
-  spr[sn].textBaseline = "middle";
+  spr[sn].textAlign = 'center';
+  spr[sn].textBaseline = 'middle';
   stage.addChild(spr[sn]);
-  sn++;
+  sn += 1;
 
   // button
-  var btxt = ["START", "TOP PAGE", "YES", "NO", "END TURN", "TITLE", "HISTORY"];
+  let btxt = ['START', 'TOP PAGE', 'YES', 'NO', 'END TURN', 'TITLE', 'HISTORY'];
   bmax = btxt.length;
-  sn_btn = sn;
-  for (i = 0; i < bmax; i++) {
-    var bt = new lib.mc();
+  snBtn = sn;
+  for (i = 0; i < bmax; i += 1) {
+    let bt = new lib.mc();
     spr[sn] = new createjs.Container();
-    bt.gotoAndStop("btn");
+    bt.gotoAndStop('btn');
     spr[sn].addChildAt(bt, 0);
-    var txt = new createjs.Text(btxt[i], "32px Anton", "Black");
-    txt.textAlign = "center";
-    txt.textBaseline = "middle";
+    let txt = new createjs.Text(btxt[i], '32px Anton', 'Black');
+    txt.textAlign = 'center';
+    txt.textBaseline = 'middle';
     spr[sn].addChildAt(txt, 1);
     stage.addChild(spr[sn]);
     spr[sn].scaleX = nume / deno;
     spr[sn].scaleY = nume / deno;
     spr[sn].visible = true;
-    sn++;
+    sn += 1;
 
     // Button functions
-    btn_func[i] = new Function();
-    btn_func[i] = null;
+    btnFunc[i] = new Function();
+    btnFunc[i] = null;
   }
 
   // Number of sprites
-  sn_max = sn;
-  for (i = 0; i < sn_max; i++) spr[i].visible = false;
+  snMax = sn;
+  for (i = 0; i < snMax; i += 1) spr[i].visible = false;
 
-  stage.addEventListener("stagemousedown", mouseDownListner);
-  stage.addEventListener("stagemousemove", mouseMoveListner);
-  stage.addEventListener("stagemouseup", mouseUpListner);
-  createjs.Ticker.addEventListener("tick", onTick);
+  stage.addEventListener('stagemousedown', mouseDownListner);
+  stage.addEventListener('stagemousemove', mouseMoveListner);
+  stage.addEventListener('stagemouseup', mouseUpListner);
+  createjs.Ticker.addEventListener('tick', onTick);
   createjs.Ticker.setFPS(60);
 
   if (soundon) {
     // Load sound in the case of a PC
-    var queue = new createjs.LoadQueue(false);
+    let queue = new createjs.LoadQueue(false);
     queue.installPlugin(createjs.Sound);
     queue.loadManifest(manifest, true);
-    queue.addEventListener("fileload", handleFileLoad);
-    queue.addEventListener("complete", handleComplete);
+    queue.addEventListener('fileload', handleFileLoad);
+    queue.addEventListener('complete', handleComplete);
   } else {
     waitcount = 60;
-    timer_func = fake_loading;
+    timerFunc = fake_loading;
   }
 }
 
 function handleFileLoad(event) {
-  var item = event.item;
+  let item = event.item;
   if (item.type == createjs.LoadQueue.SOUND) {
     startSound(item.id);
   }
@@ -407,10 +419,10 @@ function handleFileLoad(event) {
 
 function handleComplete(event) {
   waitcount = 30;
-  timer_func = fake_loading;
+  timerFunc = fake_loading;
 }
 
-var instance = new Array();
+let instance = new Array();
 
 function startSound(soundid) {
   instance[soundid] = createjs.Sound.createInstance(soundid); // Play SoundJS instance (specify id)
@@ -422,136 +434,128 @@ function playSound(soundid) {
   instance[soundid].play();
 }
 
-////////////////////////////////////////////////////
 // Event listener group
-////////////////////////////////////////////////////
-
 function mouseDownListner(e) {
-  if (click_func != null) {
-    click_func(e);
+  if (clickFunc != null) {
+    clickFunc(e);
   }
-  canvas.style.cursor = "default"; // Changing the mouse cursor
+  canvas.style.cursor = 'default'; // Changing the mouse cursor
 }
 
 function mouseMoveListner(e) {
-  if (move_func != null) {
-    move_func(e);
+  if (moveFunc != null) {
+    moveFunc(e);
   }
-  canvas.style.cursor = "default"; // Changing the mouse cursor
+  canvas.style.cursor = 'default'; // Changing the mouse cursor
 }
 
 function mouseUpListner(e) {
-  if (release_func != null) {
-    release_func(e);
+  if (releaseFunc != null) {
+    releaseFunc(e);
   }
-  canvas.style.cursor = "default"; // Changing the mouse cursor
+  canvas.style.cursor = 'default'; // Changing the mouse cursor
   if (activebutton >= 0) {
-    if (btn_func[activebutton] != null) {
-      playSound("snd_button");
-      btn_func[activebutton]();
+    if (btnFunc[activebutton] != null) {
+      playSound('snd_button');
+      btnFunc[activebutton]();
     }
   }
 }
 
 function onTick() {
-  if (timer_func != null) {
-    timer_func();
+  if (timerFunc != null) {
+    timerFunc();
   }
   check_button();
 }
 
 // button
 function check_button() {
-  var i, sn;
-  var n = -1;
-  for (i = 0; i < bmax; i++) {
-    sn = sn_btn + i;
+  let i, sn;
+  let n = -1;
+  for (i = 0; i < bmax; i += 1) {
+    sn = snBtn + i;
     if (!spr[sn].visible) continue;
-    var pt = spr[sn].globalToLocal(stage.mouseX, stage.mouseY);
+    let pt = spr[sn].globalToLocal(stage.mouseX, stage.mouseY);
     if (spr[sn].hitTest(pt.x, pt.y)) n = i;
   }
   if (activebutton == n) return;
   activebutton = n;
-  for (var i = 0; i < bmax; i++) {
+  for (let i = 0; i < bmax; i += 1) {
     if (i == activebutton) {
-      spr[sn_btn + i].getChildAt(0).gotoAndStop("press");
+      spr[snBtn + i].getChildAt(0).gotoAndStop('press');
     } else {
-      spr[sn_btn + i].getChildAt(0).gotoAndStop("btn");
+      spr[snBtn + i].getChildAt(0).gotoAndStop('btn');
     }
   }
   stage.update();
 }
 
-////////////////////////////////////////////////////
 // Loading
-////////////////////////////////////////////////////
-
 function fake_loading() {
-  spr[sn_load].visible = true;
-  spr[sn_load].text = " ";
-  spr[sn_mes].visible = true;
-  spr[sn_mes].text = "Now loading... ";
-  spr[sn_mes].x = view_w / 2;
-  spr[sn_mes].y = view_h / 2;
+  spr[snLoad].visible = true;
+  spr[snLoad].text = ' ';
+  spr[snMes].visible = true;
+  spr[snMes].text = 'Now loading... ';
+  spr[snMes].x = viewW / 2;
+  spr[snMes].y = viewH / 2;
   stage.update();
-  waitcount--;
+  waitcount -= 1;
+
   if (waitcount <= 0) {
-    timer_func = null;
-    start_title();
+    timerFunc = null;
+    startTitle();
   }
 }
 
-////////////////////////////////////////////////////
 // Title screen
-////////////////////////////////////////////////////
+function startTitle() {
+  let i;
 
-function start_title() {
-  var i;
+  for (i = 0; i < snMax; i += 1) spr[i].visible = false;
 
-  for (i = 0; i < sn_max; i++) spr[i].visible = false;
+  spr[snTitle].visible = true;
+  spr[snTitle].x = 0;
+  spr[snTitle].y = 0;
+  spr[snTitle].gotoAndStop('title');
 
-  spr[sn_title].visible = true;
-  spr[sn_title].x = 0;
-  spr[sn_title].y = 0;
-  spr[sn_title].gotoAndStop("title");
+  spr[snMes].visible = true;
+  spr[snMes].text = 'Copyright (C) 2001 GAMEDESIGN';
+  spr[snMes].color = '#aaaaaa';
+  spr[snMes].textAlign = 'right';
+  spr[snMes].x = viewW * 0.9;
+  spr[snMes].y = viewH * 0.24;
 
-  spr[sn_mes].visible = true;
-  spr[sn_mes].text = "Copyright (C) 2001 GAMEDESIGN";
-  spr[sn_mes].color = "#aaaaaa";
-  spr[sn_mes].textAlign = "right";
-  spr[sn_mes].x = view_w * 0.9;
-  spr[sn_mes].y = view_h * 0.24;
-
-  spr[sn_pmax].visible = true;
-  for (i = 0; i < 7; i++) {
-    spr[sn_pmax].getChildByName("p" + i).color =
-      i == game.pmax - 2 ? "#aa0000" : "#cccccc";
+  spr[snPmax].visible = true;
+  for (i = 0; i < 7; i += 1) {
+    spr[snPmax].getChildByName('p' + i).color =
+      i == game.pmax - 2 ? '#aa0000' : '#cccccc';
   }
 
   // button
-  spr[sn_btn + 0].x = resize(640);
-  spr[sn_btn + 0].y = resize(390);
-  spr[sn_btn + 0].visible = true;
-  btn_func[0] = make_map;
-  spr[sn_btn + 1].x = resize(640);
-  spr[sn_btn + 1].y = resize(490);
-  spr[sn_btn + 1].visible = true;
-  btn_func[1] = toppage;
+  spr[snBtn + 0].x = resize(640);
+  spr[snBtn + 0].y = resize(390);
+  spr[snBtn + 0].visible = true;
+  btnFunc[0] = make_map;
+  spr[snBtn + 1].x = resize(640);
+  spr[snBtn + 1].y = resize(490);
+  spr[snBtn + 1].visible = true;
+  btnFunc[1] = toppage;
 
   stage.update();
 
-  timer_func = null;
-  click_func = click_pmax;
-  move_func = null;
-  releaese_func = null;
+  timerFunc = null;
+  clickFunc = click_pmax;
+  moveFunc = null;
+  releaseFunc = null;
 }
 
 function click_pmax() {
-  var i,
+  let i,
     pmax = -1;
-  for (i = 0; i < 7; i++) {
-    var o = spr[sn_pmax].getChildByName("p" + i);
-    var pt = o.globalToLocal(stage.mouseX, stage.mouseY);
+  for (i = 0; i < 7; i += 1) {
+    let o = spr[snPmax].getChildByName('p' + i);
+    let pt = o.globalToLocal(stage.mouseX, stage.mouseY);
     if (
       Math.abs(pt.x) < (70 * nume) / deno &&
       Math.abs(pt.y) < (20 * nume) / deno
@@ -561,33 +565,30 @@ function click_pmax() {
   }
   if (pmax < 0) return;
   game.pmax = pmax;
-  for (i = 0; i < 7; i++) {
-    spr[sn_pmax].getChildByName("p" + i).color =
-      i == game.pmax - 2 ? "#aa0000" : "#cccccc";
+  for (i = 0; i < 7; i += 1) {
+    spr[snPmax].getChildByName('p' + i).color =
+      i == game.pmax - 2 ? '#aa0000' : '#cccccc';
   }
   stage.update();
 }
 
-////////////////////////////////////////////////////
 // Map creation screen
-////////////////////////////////////////////////////
-
 function make_map() {
-  var i, j, x, y, n;
+  let i, j, x, y, n;
 
-  for (i = 0; i < sn_max; i++) spr[i].visible = false;
+  for (i = 0; i < snMax; i += 1) spr[i].visible = false;
 
   game.make_map();
 
   // The order in which the dice are displayed
-  for (i = 0; i < game.AREA_MAX; i++) {
+  for (i = 0; i < game.AREA_MAX; i += 1) {
     n = prio[i].an;
     prio[i].cpos = game.adat[n].cpos;
   }
-  for (i = 0; i < game.AREA_MAX - 1; i++) {
-    for (j = i; j < game.AREA_MAX; j++) {
+  for (i = 0; i < game.AREA_MAX - 1; i += 1) {
+    for (j = i; j < game.AREA_MAX; j += 1) {
       if (prio[i].cpos > prio[j].cpos) {
-        var tmp = prio[i].an;
+        let tmp = prio[i].an;
         prio[i].an = prio[j].an;
         prio[j].an = tmp;
         tmp = prio[i].cpos;
@@ -596,48 +597,48 @@ function make_map() {
       }
     }
   }
-  for (i = 0; i < game.AREA_MAX; i++) {
+  for (i = 0; i < game.AREA_MAX; i += 1) {
     n = prio[i].an;
-    an2sn[n] = sn_dice + i;
+    an2sn[n] = snDice + i;
   }
 
   // area filling
-  for (i = 0; i < game.AREA_MAX; i++) {
-    draw_areashape(sn_area + i, i, 0);
+  for (i = 0; i < game.AREA_MAX; i += 1) {
+    drawAreashape(snArea + i, i, 0);
   }
 
   // area dice
-  for (i = 0; i < game.AREA_MAX; i++) {
-    draw_areadice(sn_dice + i, prio[i].an);
+  for (i = 0; i < game.AREA_MAX; i += 1) {
+    drawAreadice(snDice + i, prio[i].an);
   }
 
-  spr[sn_mes].visible = true;
-  spr[sn_mes].text = "Play this board?";
-  spr[sn_mes].color = "#000000";
-  spr[sn_mes].textAlign = "left";
-  spr[sn_mes].x = view_w * 0.1;
-  spr[sn_mes].y = ypos_mes;
+  spr[snMes].visible = true;
+  spr[snMes].text = 'Play this board?';
+  spr[snMes].color = '#000000';
+  spr[snMes].textAlign = 'left';
+  spr[snMes].x = viewW * 0.1;
+  spr[snMes].y = yposMes;
 
   // button
-  spr[sn_btn + 2].x = resize(500);
-  spr[sn_btn + 2].y = ypos_mes;
-  spr[sn_btn + 2].visible = true;
-  btn_func[2] = start_game;
-  spr[sn_btn + 3].x = resize(650);
-  spr[sn_btn + 3].y = ypos_mes;
-  spr[sn_btn + 3].visible = true;
-  btn_func[3] = make_map;
+  spr[snBtn + 2].x = resize(500);
+  spr[snBtn + 2].y = yposMes;
+  spr[snBtn + 2].visible = true;
+  btnFunc[2] = start_game;
+  spr[snBtn + 3].x = resize(650);
+  spr[snBtn + 3].y = yposMes;
+  spr[snBtn + 3].visible = true;
+  btnFunc[3] = make_map;
 
   stage.update();
 
-  timer_func = null;
-  click_func = null;
-  move_func = null;
-  releaese_func = null;
+  timerFunc = null;
+  clickFunc = null;
+  moveFunc = null;
+  releaseFunc = null;
 }
 
-function draw_areashape(sn, area, paint_mode) {
-  var i, j;
+function drawAreashape(sn, area, paint_mode) {
+  let i, j;
 
   if (game.adat[area].size == 0) {
     spr[sn].visible = false;
@@ -645,58 +646,58 @@ function draw_areashape(sn, area, paint_mode) {
   }
   spr[sn].visible = true;
   spr[sn].graphics.clear();
-  var cnt = 0;
-  var c = game.adat[area].line_cel[cnt];
-  var d = game.adat[area].line_dir[cnt];
-  var ax = [cel_w / 2, cel_w, cel_w, cel_w / 2, 0, 0, cel_w / 2];
-  var ax_left = [
-    cel_w / 2,
-    cel_w,
-    cel_w,
-    cel_w / 2,
-    -cel_w / 2,
-    -cel_w / 2,
-    cel_w / 2,
+  let cnt = 0;
+  let c = game.adat[area].line_cel[cnt];
+  let d = game.adat[area].line_dir[cnt];
+  let ax = [celW / 2, celW, celW, celW / 2, 0, 0, celW / 2];
+  let ax_left = [
+    celW / 2,
+    celW,
+    celW,
+    celW / 2,
+    -celW / 2,
+    -celW / 2,
+    celW / 2,
   ];
-  var s = (3 * nume) / deno;
-  var ay = [-s, s, cel_h - s, cel_h + s, cel_h - s, s, -s];
-  var ay_top = [
-    -cel_h / 2,
-    -cel_h / 2,
-    cel_h - s,
-    cel_h + s,
-    cel_h - s,
-    -cel_h / 2,
-    -cel_h / 2,
+  let s = (3 * nume) / deno;
+  let ay = [-s, s, celH - s, celH + s, celH - s, s, -s];
+  let ay_top = [
+    -celH / 2,
+    -celH / 2,
+    celH - s,
+    celH + s,
+    celH - s,
+    -celH / 2,
+    -celH / 2,
   ];
-  var line_color = "#222244";
-  if (paint_mode) line_color = "#ff0000";
+  let line_color = '#222244';
+  if (paint_mode) line_color = '#ff0000';
   spr[sn].graphics.beginStroke(line_color);
-  var armcolor = [
-    "#b37ffe",
-    "#b3ff01",
-    "#009302",
-    "#ff7ffe",
-    "#ff7f01",
-    "#b3fffe",
-    "#ffff01",
-    "#ff5858",
+  let armcolor = [
+    '#b37ffe',
+    '#b3ff01',
+    '#009302',
+    '#ff7ffe',
+    '#ff7f01',
+    '#b3fffe',
+    '#ffff01',
+    '#ff5858',
   ];
-  var color = armcolor[game.adat[area].arm];
-  if (paint_mode) color = "#000000";
+  let color = armcolor[game.adat[area].arm];
+  if (paint_mode) color = '#000000';
   spr[sn].graphics
-    .setStrokeStyle((4 * nume) / deno, "round", "round")
+    .setStrokeStyle((4 * nume) / deno, 'round', 'round')
     .beginFill(color);
-  var px = ax[d];
-  var py = ay[d];
-  spr[sn].graphics.moveTo(cpos_x[c] + px, cpos_y[c] + py);
+  let px = ax[d];
+  let py = ay[d];
+  spr[sn].graphics.moveTo(cposX[c] + px, cposY[c] + py);
 
-  for (var i = 0; i < 100; i++) {
+  for (let i = 0; i < 100; i += 1) {
     // Draw a line first
-    var px = ax[d + 1];
-    var py = ay[d + 1];
-    spr[sn].graphics.lineTo(cpos_x[c] + px, cpos_y[c] + py);
-    cnt++;
+    let px = ax[d + 1];
+    let py = ay[d + 1];
+    spr[sn].graphics.lineTo(cposX[c] + px, cposY[c] + py);
+    cnt += 1;
     c = game.adat[area].line_cel[cnt];
     d = game.adat[area].line_dir[cnt];
     if (c == game.adat[area].line_cel[0] && d == game.adat[area].line_dir[0])
@@ -705,272 +706,309 @@ function draw_areashape(sn, area, paint_mode) {
 }
 
 // area dice
-function draw_areadice(sn, area) {
+function drawAreadice(sn, area) {
   if (game.adat[area].size == 0) {
     spr[sn].visible = false;
     return;
   }
   spr[sn].visible = true;
-  var n = game.adat[area].cpos;
-  spr[sn].x = Math.floor(cpos_x[n] + (6 * nume) / deno);
-  spr[sn].y = Math.floor(cpos_y[n] - (10 * nume) / deno);
+  let n = game.adat[area].cpos;
+  spr[sn].x = Math.floor(cposX[n] + (6 * nume) / deno);
+  spr[sn].y = Math.floor(cposY[n] - (10 * nume) / deno);
   spr[sn].gotoAndStop(game.adat[area].arm * 10 + game.adat[area].dice - 1);
 }
 
-////////////////////////////////////////////////////
 // Start playing
-////////////////////////////////////////////////////
-
 function start_game() {
   game.start_game();
-  start_player();
+  startPlayer();
 }
 
 // player state
-function draw_player_data() {
-  var i;
-  var pnum = 0;
-  for (i = 0; i < 8; i++) {
-    spr[sn_player + i].visible = false;
-    var p = game.jun[i];
+function drawPlayerData() {
+  let pnum = 0;
+
+  for (let i = 0; i < 8; i += 1) {
+    spr[snPlayer + i].visible = false;
+    let p = game.jun[i];
+
     if (game.player[p].area_tc > 0) {
-      spr[sn_player + i].visible = true;
-      pnum++;
+      spr[snPlayer + i].visible = true;
+      pnum += 1;
     }
   }
-  var c = 0;
-  for (i = 0; i < 8; i++) {
-    var p = game.jun[i];
-    if (game.player[p].area_tc == 0) continue;
-    var sn = sn_player + i;
-    w = (100 * nume) / deno;
-    var ox = view_w / 2 - ((pnum - 1) * w) / 2 + c * w;
-    spr[sn].x = ox; //-22*nume/deno;
-    spr[sn].y = ypos_arm;
-    spr[sn].getChildAt(0).gotoAndStop("d" + p + "0");
-    spr[sn].getChildAt(1).text = "" + game.player[p].area_tc;
-    spr[sn].getChildAt(2).text = "";
-    if (game.player[p].stock > 0)
-      spr[sn].getChildAt(2).text = "" + game.player[p].stock;
-    if (i == game.ban) {
-      spr[sn_ban].x = ox;
-      spr[sn_ban].y = ypos_arm;
-      spr[sn_ban].gotoAndStop("ban");
-      spr[sn_ban].visible = true;
+
+  let c = 0;
+  for (let i = 0; i < 8; i += 1) {
+    const p = game.jun[i];
+    if (game.player[p].area_tc === 0) {
+      continue;
     }
-    c++;
+
+    const sn = snPlayer + i;
+    w = (100 * nume) / deno;
+
+    const ox = viewW / 2 - ((pnum - 1) * w) / 2 + c * w;
+
+    spr[sn].x = ox; // -22*nume/deno;
+    spr[sn].y = yposArm;
+    spr[sn].getChildAt(0).gotoAndStop(`d${p}0`);
+    spr[sn].getChildAt(1).text = '' + game.player[p].area_tc;
+    spr[sn].getChildAt(2).text = '';
+
+    if (game.player[p].stock > 0) {
+      spr[sn].getChildAt(2).text = '' + game.player[p].stock;
+    }
+
+    if (i === game.ban) {
+      spr[snBan].x = ox;
+      spr[snBan].y = yposArm;
+      spr[snBan].gotoAndStop('ban');
+      spr[snBan].visible = true;
+    }
+    c += 1;
   }
 }
 
-////////////////////////////////////////////////////
 // It's my turn
-////////////////////////////////////////////////////
-
-function start_player() {
-  for (var i = sn_info; i < sn_max; i++) {
+const startPlayer = () => {
+  for (let i = snInfo; i < snMax; i += 1) {
     spr[i].visible = false;
   }
 
-  draw_player_data();
+  drawPlayerData();
 
-  if (game.jun[game.ban] == game.user) {
-    start_man();
+  if (game.jun[game.ban] === game.user) {
+    startMan();
   } else {
-    //    start_man();
-    start_com();
+    // startMan();
+    startCom();
   }
-}
+};
 
-////////////////////////////////////////////////////
 // Player begins to act
-////////////////////////////////////////////////////
-
-function start_man() {
-  spr[sn_mes].visible = true;
-  spr[sn_mes].text = "1. Click your area. 2. Click neighbor to attack.";
-  spr[sn_mes].color = "#000000";
-  spr[sn_mes].textAlign = "left";
-  spr[sn_mes].x = view_w * 0.05;
-  spr[sn_mes].y = ypos_mes;
+const startMan = () => {
+  spr[snMes].visible = true;
+  spr[snMes].text = '1. Click your area. 2. Click neighbor to attack.';
+  spr[snMes].color = '#000000';
+  spr[snMes].textAlign = 'left';
+  spr[snMes].x = viewW * 0.05;
+  spr[snMes].y = yposMes;
 
   // button
   activebutton = -1; // Fixed a bug that causes endturn when the button is not clicked
-  spr[sn_btn + 4].x = view_w - (100 * nume) / deno;
-  spr[sn_btn + 4].y = ypos_mes;
-  spr[sn_btn + 4].visible = true;
-  btn_func[4] = end_turn;
+  spr[snBtn + 4].x = viewW - (100 * nume) / deno;
+  spr[snBtn + 4].y = yposMes;
+  spr[snBtn + 4].visible = true;
+  btnFunc[4] = endTurn;
 
-  spr[sn_from].visible = false;
-  spr[sn_to].visible = false;
+  spr[snFrom].visible = false;
+  spr[snTo].visible = false;
   stage.update();
 
-  timer_func = null;
-  click_func = first_click;
-  move_func = null;
-  releaese_func = null;
-}
+  timerFunc = null;
+  clickFunc = firstClick;
+  moveFunc = null;
+  releaseFunc = null;
+};
 
 // Get the area you clicked on
-function clicked_area() {
-  var i, sn;
-  var ret = -1;
-  for (i = 0; i < game.AREA_MAX; i++) {
-    if (game.adat[i].size == 0) continue;
-    sn = sn_area + i;
-    var pt = spr[sn].globalToLocal(stage.mouseX, stage.mouseY);
-    if (spr[sn].hitTest(pt.x, pt.y)) ret = i;
+const clickedArea = () => {
+  let ret = -1;
+  let sn;
+
+  for (let i = 0; i < game.AREA_MAX; i += 1) {
+    if (game.adat[i].size === 0) {
+      continue;
+    }
+    sn = snArea + i;
+    const pt = spr[sn].globalToLocal(stage.mouseX, stage.mouseY);
+
+    if (spr[sn].hitTest(pt.x, pt.y)) {
+      ret = i;
+    }
   }
-  for (i = 0; i < game.AREA_MAX; i++) {
-    var a = prio[i].an;
-    if (game.adat[a].size == 0) continue;
-    sn = sn_dice + i;
-    var pt = spr[sn].globalToLocal(stage.mouseX, stage.mouseY);
-    if (spr[sn].hitTest(pt.x, pt.y)) ret = a;
+
+  for (let i = 0; i < game.AREA_MAX; i += 1) {
+    const a = prio[i].an;
+    if (game.adat[a].size === 0) {
+      continue;
+    }
+
+    sn = snDice + i;
+    const pt = spr[sn].globalToLocal(stage.mouseX, stage.mouseY);
+
+    if (spr[sn].hitTest(pt.x, pt.y)) {
+      ret = a;
+    }
   }
+
   return ret;
-}
+};
 
 // first time
-function first_click() {
-  var p = game.jun[game.ban];
-  var an = clicked_area();
-  if (an < 0) return;
-  if (game.adat[an].arm != p) return;
-  if (game.adat[an].dice <= 1) return;
+const firstClick = () => {
+  const p = game.jun[game.ban];
+  const an = clickedArea();
 
-  spr[sn_mes].visible = false;
+  if (an < 0) {
+    return;
+  }
+  if (game.adat[an].arm !== p) {
+    return;
+  }
+  if (game.adat[an].dice <= 1) {
+    return;
+  }
+
+  spr[snMes].visible = false;
 
   game.area_from = an;
-  draw_areashape(sn_from, an, 1);
+  drawAreashape(snFrom, an, 1);
 
-  playSound("snd_click");
+  playSound('snd_click');
 
   stage.update();
-  click_func = second_click;
-}
+  clickFunc = secondClick;
+};
 
 // second time
-function second_click() {
-  var p = game.jun[game.ban];
-  var an = clicked_area();
-  if (an < 0) return;
+const secondClick = () => {
+  const p = game.jun[game.ban];
+  let an = clickedArea();
+
+  if (an < 0) {
+    return;
+  }
 
   // Deselect in the same area
-  if (an == game.area_from) {
-    start_man();
+  if (an === game.area_from) {
+    startMan();
     return;
   }
-  if (game.adat[an].arm == p) return;
-  if (game.adat[an].join[game.area_from] == 0) return;
+
+  if (game.adat[an].arm === p) {
+    return;
+  }
+
+  if (game.adat[an].join[game.area_from] === 0) {
+    return;
+  }
 
   game.area_to = an;
-  draw_areashape(sn_to, an, 1);
+  drawAreashape(snTo, an, 1);
   stage.update();
-  playSound("snd_click");
-  start_battle();
-}
+  playSound('snd_click');
+  startBattle();
+};
 
 // End of action
-function end_turn() {
-  spr[sn_btn + 4].visible = false;
-  spr[sn_from].visible = false;
-  spr[sn_to].visible = false;
-  spr[sn_mes].visible = false;
+const endTurn = () => {
+  spr[snBtn + 4].visible = false;
+  spr[snFrom].visible = false;
+  spr[snTo].visible = false;
+  spr[snMes].visible = false;
 
-  timer_func = null;
-  click_func = null;
-  move_func = null;
-  releaese_func = null;
+  timerFunc = null;
+  clickFunc = null;
+  moveFunc = null;
+  releaseFunc = null;
 
-  start_supply();
-}
+  startSupply();
+};
 
-////////////////////////////////////////////////////
 // COM Thinking
-////////////////////////////////////////////////////
+const startCom = () => {
+  const ret = game.com_thinking();
 
-function start_com() {
-  var ret = game.com_thinking();
-  if (ret == 0) {
-    start_supply();
+  if (ret === 0) {
+    startSupply();
     return;
   }
+
   stage.update();
 
   waitcount = 5;
-  timer_func = com_from;
-  click_func = null;
-  move_func = null;
-  releaese_func = null;
-}
+  timerFunc = comFrom;
+  clickFunc = null;
+  moveFunc = null;
+  releaseFunc = null;
+};
 
-function com_from() {
-  waitcount--;
-  if (waitcount > 0) return;
+const comFrom = () => {
+  waitcount -= 1;
 
-  draw_areashape(sn_from, game.area_from, 1);
-  stage.update();
-
-  waitcount = 5;
-  timer_func = com_to;
-}
-
-function com_to() {
-  waitcount--;
-  if (waitcount > 0) return;
-
-  draw_areashape(sn_to, game.area_to, 1);
-  stage.update();
-
-  start_battle();
-}
-
-////////////////////////////////////////////////////
-// Battle
-////////////////////////////////////////////////////
-
-function start_battle() {
-  var i, j;
-
-  spr[sn_btn + 4].visible = false; // Turn off the END TURN button.
-  spr[sn_ban].visible = false;
-  for (i = 0; i < 8; i++) {
-    spr[sn_player + i].visible = false;
+  if (waitcount > 0) {
+    return;
   }
 
-  // Variables in the battle scene
-  var an = [game.area_from, game.area_to];
-  for (i = 0; i < 2; i++) {
+  drawAreashape(snFrom, game.area_from, 1);
+  stage.update();
+
+  waitcount = 5;
+  timerFunc = comTo;
+};
+
+const comTo = () => {
+  waitcount -= 1;
+
+  if (waitcount > 0) {
+    return;
+  }
+
+  drawAreashape(snTo, game.area_to, 1);
+  stage.update();
+
+  startBattle();
+};
+
+// Battle
+const startBattle = () => {
+  spr[snBtn + 4].visible = false; // Turn off the END TURN button.
+  spr[snBan].visible = false;
+
+  for (let i = 0; i < 8; i += 1) {
+    spr[snPlayer + i].visible = false;
+  }
+
+  // letiables in the battle scene
+  const an = [game.area_from, game.area_to];
+
+  for (let i = 0; i < 2; i += 1) {
     battle[i].arm = game.adat[an[i]].arm;
     battle[i].dmax = game.adat[an[i]].dice;
 
-    for (j = 0; j < 8; j++) {
-      var r = Math.floor(Math.random() * 8);
-      var tmp = battle[i].usedice[j];
+    for (let j = 0; j < 8; j += 1) {
+      const r = Math.floor(Math.random() * 8);
+      const tmp = battle[i].usedice[j];
+
       battle[i].usedice[j] = battle[i].usedice[r];
       battle[i].usedice[r] = tmp;
     }
 
     battle[i].sum = 0;
 
-    for (j = 0; j < 8; j++) {
+    for (let j = 0; j < 8; j += 1) {
       battle[i].deme[j] = Math.floor(Math.random() * 6);
+
       if (battle[i].usedice[j] < battle[i].dmax) {
         battle[i].sum += 1 + battle[i].deme[j];
       }
       battle[i].fin[j] = false;
     }
   }
-  spr[sn_battle].visible = true;
+  spr[snBattle].visible = true;
 
-  for (i = 0; i < 2; i++) {
-    var w = 4;
-    var h = 2;
-    var r = 8;
-    var ox = i == 0 ? w * 100 : -w * 90;
-    var oy = i == 0 ? -h * 50 : h * 60;
-    for (j = 0; j < 8; j++) {
-      var o = spr[sn_battle].getChildByName("d" + i + j);
+  for (let i = 0; i < 2; i += 1) {
+    const w = 4;
+    const h = 2;
+    const r = 8;
+    const ox = i === 0 ? w * 100 : -w * 90;
+    const oy = i === 0 ? -h * 50 : h * 60;
+
+    for (let j = 0; j < 8; j += 1) {
+      const o = spr[snBattle].getChildByName(`d${i}${j}`);
+
       o.vx =
         ox + (j % 3) * 10 * w - Math.floor(j / 3) * 10 * w + Math.random() * r;
       o.vy =
@@ -981,218 +1019,263 @@ function start_battle() {
       o.up = Math.random() * 22;
       o.bc = 0;
       o.visible = false;
-      var s = spr[sn_battle].getChildByName("s" + i + j);
+
+      const s = spr[snBattle].getChildByName(`s${i}${j}`);
       s.x = o.vx;
       s.y = o.vy;
-      s.gotoAndStop("shadow");
+      s.gotoAndStop('shadow');
       s.visible = false;
     }
   }
-  spr[sn_battle].getChildByName("n0").x = 110;
-  spr[sn_battle].getChildByName("n0").y = -10;
-  spr[sn_battle].getChildByName("n0").visible = false;
-  spr[sn_battle].getChildByName("n1").x = -290;
-  spr[sn_battle].getChildByName("n1").y = -10;
-  spr[sn_battle].getChildByName("n1").visible = false;
+
+  spr[snBattle].getChildByName('n0').x = 110;
+  spr[snBattle].getChildByName('n0').y = -10;
+  spr[snBattle].getChildByName('n0').visible = false;
+  spr[snBattle].getChildByName('n1').x = -290;
+  spr[snBattle].getChildByName('n1').y = -10;
+  spr[snBattle].getChildByName('n1').visible = false;
 
   bturn = 0;
 
   stage.update();
-  timer_func = battle_dice;
-  click_func = null;
-  move_func = null;
-  releaese_func = null;
-}
+  timerFunc = battleDice;
+  clickFunc = null;
+  moveFunc = null;
+  releaseFunc = null;
+};
 
-function battle_dice() {
-  var i, j;
-  var w = bturn == 0 ? -10 : 10;
-  var h = bturn == 0 ? 6 : -6;
-  var f = false;
-  var soundflg = false;
-  for (i = 0; i < 8; i++) {
+const battleDice = () => {
+  const w = bturn === 0 ? -10 : 10;
+  const h = bturn === 0 ? 6 : -6;
+  let f = false;
+  let soundflg = false;
+
+  for (let i = 0; i < 8; i += 1) {
     if (battle[bturn].fin[i] > 0) continue;
-    var o = spr[sn_battle].getChildByName("d" + bturn + i);
+
+    const o = spr[snBattle].getChildByName(`d${bturn}${i}`);
+
     o.visible = true;
     o.vx += w;
     o.vy += h;
     o.z += o.up;
     o.up -= 3;
+
     if (o.z < 0) {
       o.z = 0;
       o.up = 5 - o.bc * 3;
-      o.bc++;
+      o.bc += 1;
+
       if (o.bc >= 2) {
         battle[bturn].fin[i] = 1;
-        if (bturn == 0) {
+
+        if (bturn === 0) {
           if (i >= 3) {
-            if (battle[bturn].fin[i - 3] == 0) battle[bturn].fin[i] = 0;
+            if (battle[bturn].fin[i - 3] === 0) {
+              battle[bturn].fin[i] = 0;
+            }
           }
           if (i >= 2) {
-            if (battle[bturn].fin[i - 2] == 0) battle[bturn].fin[i] = 0;
+            if (battle[bturn].fin[i - 2] === 0) {
+              battle[bturn].fin[i] = 0;
+            }
           }
         } else {
           if (i < 5) {
-            if (battle[bturn].fin[i + 3] == 0) battle[bturn].fin[i] = 0;
+            if (battle[bturn].fin[i + 3] === 0) {
+              battle[bturn].fin[i] = 0;
+            }
           }
           if (i < 6) {
-            if (battle[bturn].fin[i + 2] == 0) battle[bturn].fin[i] = 0;
+            if (battle[bturn].fin[i + 2] === 0) {
+              battle[bturn].fin[i] = 0;
+            }
           }
         }
       }
-      if (o.bc == 1) {
-        if (battle[bturn].usedice[i] < battle[bturn].dmax) soundflg = true;
+
+      if (o.bc === 1) {
+        if (battle[bturn].usedice[i] < battle[bturn].dmax) {
+          soundflg = true;
+        }
       }
     }
+
     o.x = o.vx;
     o.y = o.vy - o.z;
-    o.gotoAndStop("d" + battle[bturn].arm + Math.floor(Math.random() * 6));
+    o.gotoAndStop(`d${battle[bturn].arm}${Math.floor(Math.random() * 6)}`);
+
     if (battle[bturn].fin[i] > 0) {
-      o.gotoAndStop("d" + battle[bturn].arm + battle[bturn].deme[i]);
-      if (battle[bturn].usedice[i] < battle[bturn].dmax) soundflg = true;
+      o.gotoAndStop(`d${battle[bturn].arm}${battle[bturn].deme[i]}`);
+      if (battle[bturn].usedice[i] < battle[bturn].dmax) {
+        soundflg = true;
+      }
     }
-    var s = spr[sn_battle].getChildByName("s" + bturn + i);
+
+    const s = spr[snBattle].getChildByName(`s${bturn}${i}`);
     s.visible = true;
     s.x = o.vx;
     s.y = o.vy;
+
     if (battle[bturn].usedice[i] >= battle[bturn].dmax) {
       o.visible = false;
       s.visible = false;
     }
     f = true;
   }
+
   if (!f) {
-    spr[sn_battle].getChildByName("n" + bturn).visible = true;
-    spr[sn_battle].getChildByName("n" + bturn).text = "" + battle[bturn].sum;
-    bturn++;
+    spr[snBattle].getChildByName(`n${bturn}`).visible = true;
+    spr[snBattle].getChildByName(`n${bturn}`).text = '' + battle[bturn].sum;
+    bturn += 1;
+
     if (bturn >= 2) {
       waitcount = 15;
-      timer_func = after_battle;
+      timerFunc = afterBattle;
     }
   }
+
   if (soundflg) {
-    playSound("snd_dice");
+    playSound('snd_dice');
   }
+
   stage.update();
-}
+};
 
-function after_battle() {
-  waitcount--;
-  if (waitcount > 0) return;
-  spr[sn_battle].visible = false;
-  spr[sn_from].visible = false;
-  spr[sn_to].visible = false;
-  spr[sn_ban].visible = true;
-  for (i = 0; i < 8; i++) {
-    spr[sn_player + i].visible = true;
+const afterBattle = () => {
+  waitcount -= 1;
+
+  if (waitcount > 0) {
+    return;
   }
 
-  var arm0 = game.adat[game.area_from].arm;
-  var arm1 = game.adat[game.area_to].arm;
-  var defeat = battle[0].sum > battle[1].sum ? 1 : 0;
+  spr[snBattle].visible = false;
+  spr[snFrom].visible = false;
+  spr[snTo].visible = false;
+  spr[snBan].visible = true;
+
+  for (let i = 0; i < 8; i += 1) {
+    spr[snPlayer + i].visible = true;
+  }
+
+  const arm0 = game.adat[game.area_from].arm;
+  const arm1 = game.adat[game.area_to].arm;
+  const defeat = battle[0].sum > battle[1].sum ? 1 : 0;
+
   if (defeat > 0) {
     game.adat[game.area_to].dice = game.adat[game.area_from].dice - 1;
     game.adat[game.area_from].dice = 1;
     game.adat[game.area_to].arm = arm0;
     game.set_area_tc(arm0);
     game.set_area_tc(arm1);
-    playSound("snd_success");
+    playSound('snd_success');
   } else {
     game.adat[game.area_from].dice = 1;
-    playSound("snd_fail");
+    playSound('snd_fail');
   }
 
-  draw_areashape(sn_area + game.area_to, game.area_to, 0);
-  draw_areadice(an2sn[game.area_from], game.area_from);
-  draw_areadice(an2sn[game.area_to], game.area_to);
+  drawAreashape(snArea + game.area_to, game.area_to, 0);
+  drawAreadice(an2sn[game.area_from], game.area_from);
+  drawAreadice(an2sn[game.area_to], game.area_to);
 
   // log
   game.set_his(game.area_from, game.area_to, defeat);
 
-  if (game.player[game.user].area_tc == 0) {
-    draw_player_data();
-    start_gameover();
+  if (game.player[game.user].area_tc === 0) {
+    drawPlayerData();
+    startGameover();
   } else {
-    var c = 0;
-    for (var i = 0; i < game.pmax; i++) {
-      if (game.player[i].area_tc > 0) c++;
+    let c = 0;
+
+    for (let i = 0; i < game.pmax; i += 1) {
+      if (game.player[i].area_tc > 0) c += 1;
     }
-    if (c == 1) {
-      draw_player_data();
-      start_win();
+
+    if (c === 1) {
+      drawPlayerData();
+      startWin();
     } else {
-      start_player();
+      startPlayer();
     }
   }
-}
+};
 
-////////////////////////////////////////////////////
 // Start replenishing dice
-////////////////////////////////////////////////////
+const startSupply = () => {
+  spr[snFrom].visible = false;
+  spr[snTo].visible = false;
+  spr[snBtn + 4].visible = false;
 
-function start_supply() {
-  spr[sn_from].visible = false;
-  spr[sn_to].visible = false;
-  spr[sn_btn + 4].visible = false;
+  const pn = game.jun[game.ban];
 
-  var pn = game.jun[game.ban];
-  //  game.player[pn].stock = 64;
+  // game.player[pn].stock = 64;
   game.set_area_tc(pn);
   game.player[pn].stock += game.player[pn].area_tc;
+
   if (game.player[pn].stock > game.STOCK_MAX) {
     game.player[pn].stock = game.STOCK_MAX;
   }
 
-  spr[sn_supply].visible = true;
-  for (var i = 0; i < game.STOCK_MAX; i++) {
+  spr[snSupply].visible = true;
+
+  for (let i = 0; i < game.STOCK_MAX; i += 1) {
     if (i < game.player[pn].stock) {
-      spr[sn_supply].getChildAt(i).visible = true;
-      spr[sn_supply].getChildAt(i).gotoAndStop("d" + pn + "3");
+      spr[snSupply].getChildAt(i).visible = true;
+      spr[snSupply].getChildAt(i).gotoAndStop('d' + pn + '3');
     } else {
-      spr[sn_supply].getChildAt(i).visible = false;
+      spr[snSupply].getChildAt(i).visible = false;
     }
   }
   stage.update();
 
   waitcount = 10;
-  timer_func = supply_waiting;
-  click_func = null;
-  move_func = null;
-  releaese_func = null;
-}
+  timerFunc = supplyWaiting;
+  clickFunc = null;
+  moveFunc = null;
+  releaseFunc = null;
+};
 
-function supply_waiting() {
-  waitcount--;
-  if (waitcount > 0) return;
-  timer_func = supply_dice;
-}
+// Go to the next player
+const nextPlayer = () => {
+  for (let i = 0; i < game.pmax; i += 1) {
+    game.ban += 1;
+    if (game.ban >= game.pmax) game.ban = 0;
+    const pn = game.jun[game.ban];
+    if (game.player[pn].area_tc) break;
+  }
+  if (game.jun[game.ban] === game.user) playSound('snd_myturn');
 
-function supply_dice() {
-  var pn = game.jun[game.ban];
-  var list = new Array();
-  c = 0;
-  for (var i = 0; i < game.AREA_MAX; i++) {
-    if (game.adat[i].size == 0) continue;
-    if (game.adat[i].arm != pn) continue;
+  startPlayer();
+};
+
+const supplyDice = () => {
+  const pn = game.jun[game.ban];
+  const list = [];
+  let c = 0;
+
+  for (let i = 0; i < game.AREA_MAX; i += 1) {
+    if (game.adat[i].size === 0) continue;
+    if (game.adat[i].arm !== pn) continue;
     if (game.adat[i].dice >= 8) continue;
     list[c] = i;
-    c++;
+    c += 1;
   }
-  if (c == 0 || game.player[pn].stock <= 0) {
-    next_player();
+
+  if (c === 0 || game.player[pn].stock <= 0) {
+    nextPlayer();
     return;
   }
 
-  game.player[pn].stock--;
-  var an = list[Math.floor(Math.random() * c)];
-  game.adat[an].dice++;
-  draw_areadice(an2sn[an], an);
+  game.player[pn].stock -= 1;
+  let an = list[Math.floor(Math.random() * c)];
+  game.adat[an].dice += 1;
+  drawAreadice(an2sn[an], an);
 
-  for (i = 0; i < game.STOCK_MAX; i++) {
+  for (let i = 0; i < game.STOCK_MAX; i += 1) {
     if (i < game.player[pn].stock) {
-      spr[sn_supply].getChildAt(i).visible = true;
+      spr[snSupply].getChildAt(i).visible = true;
     } else {
-      spr[sn_supply].getChildAt(i).visible = false;
+      spr[snSupply].getChildAt(i).visible = false;
     }
   }
 
@@ -1202,229 +1285,221 @@ function supply_dice() {
   stage.update();
 
   return;
-}
+};
 
-////////////////////////////////////////////////////
-// Go to the next player
-////////////////////////////////////////////////////
+const supplyWaiting = () => {
+  waitcount -= 1;
 
-function next_player() {
-  for (var i = 0; i < game.pmax; i++) {
-    game.ban++;
-    if (game.ban >= game.pmax) game.ban = 0;
-    var pn = game.jun[game.ban];
-    if (game.player[pn].area_tc) break;
+  if (waitcount > 0) {
+    return;
   }
-  if (game.jun[game.ban] == game.user) playSound("snd_myturn");
 
-  start_player();
-}
+  timerFunc = supplyDice;
+};
 
-////////////////////////////////////////////////////
 // Gameover
-////////////////////////////////////////////////////
-
-function start_gameover() {
-  spr[sn_gameover].visible = false;
-  spr[sn_gameover].x = view_w / 2;
-  spr[sn_gameover].y = view_h / 2;
-  spr[sn_gameover].getChildByName("bg").alpha = 0;
-  spr[sn_gameover].getChildByName("mes").alpha = 0;
-  spr[sn_gameover].getChildByName("mes").y = -120;
+const startGameover = () => {
+  spr[snGameover].visible = false;
+  spr[snGameover].x = viewW / 2;
+  spr[snGameover].y = viewH / 2;
+  spr[snGameover].getChildByName('bg').alpha = 0;
+  spr[snGameover].getChildByName('mes').alpha = 0;
+  spr[snGameover].getChildByName('mes').y = -120;
   stage.update();
   stat = 0;
   waitcount = 0;
-  timer_func = gameover;
-  click_func = null;
-  move_func = null;
-  releaese_func = null;
-}
+  timerFunc = gameover;
+  clickFunc = null;
+  moveFunc = null;
+  releaseFunc = null;
+};
 
-function gameover() {
-  spr[sn_gameover].visible = true;
-  waitcount++;
-  if (stat == 0) {
-    var a = (-80 + waitcount) / 100;
-    spr[sn_gameover].getChildByName("bg").alpha = a;
+const gameover = () => {
+  spr[snGameover].visible = true;
+  waitcount += 1;
+
+  if (stat === 0) {
+    let a = (-80 + waitcount) / 100;
+    spr[snGameover].getChildByName('bg').alpha = a;
+
     if (a > 0.8) {
-      playSound("snd_over");
+      playSound('snd_over');
       waitcount = 0;
-      stat++;
+      stat += 1;
     }
     stage.update();
-  } else if (stat == 1) {
-    var a = waitcount / 100;
-    var o = spr[sn_gameover].getChildByName("mes");
+  } else if (stat === 1) {
+    const a = waitcount / 100;
+    const o = spr[snGameover].getChildByName('mes');
+
     o.alpha = a;
     o.y += 0.5;
-    if (o.y > -70) o.y = -70;
+
+    if (o.y > -70) {
+      o.y = -70;
+    }
+
     if (waitcount >= 160) {
       // button
-      spr[sn_btn + 5].x = view_w / 2 - resize(100);
-      spr[sn_btn + 5].y = view_h / 2 + resize(70);
-      spr[sn_btn + 5].visible = true;
-      btn_func[5] = start_title;
-      spr[sn_btn + 6].x = view_w / 2 + resize(100);
-      spr[sn_btn + 6].y = view_h / 2 + resize(70);
-      spr[sn_btn + 6].visible = true;
-      btn_func[6] = start_history;
+      spr[snBtn + 5].x = viewW / 2 - resize(100);
+      spr[snBtn + 5].y = viewH / 2 + resize(70);
+      spr[snBtn + 5].visible = true;
+      btnFunc[5] = startTitle;
+      spr[snBtn + 6].x = viewW / 2 + resize(100);
+      spr[snBtn + 6].y = viewH / 2 + resize(70);
+      spr[snBtn + 6].visible = true;
+      btnFunc[6] = startHistory;
 
       waitcount = 0;
-      stat++;
+      stat += 1;
     }
+
     stage.update();
   }
-}
+};
 
-////////////////////////////////////////////////////
 // You Win!
-////////////////////////////////////////////////////
-
-function start_win() {
-  spr[sn_win].visible = false;
-  spr[sn_win].x = view_w / 2;
-  spr[sn_win].y = view_h / 2 - resize(70);
-  spr[sn_win].gotoAndStop("win");
+const startWin = () => {
+  spr[snWin].visible = false;
+  spr[snWin].x = viewW / 2;
+  spr[snWin].y = viewH / 2 - resize(70);
+  spr[snWin].gotoAndStop('win');
   waitcount = 0;
-  timer_func = win;
-  click_func = null;
-  move_func = null;
-  releaese_func = null;
-}
+  timerFunc = win;
+  clickFunc = null;
+  moveFunc = null;
+  releaseFunc = null;
+};
 
-function win() {
-  waitcount++;
-  var a = Math.floor(waitcount / 2);
-  if (a == 10 || a == 12 || a == 14 || a == 16 || a >= 18) {
-    spr[sn_win].visible = true;
+const win = () => {
+  waitcount += 1;
+
+  const a = Math.floor(waitcount / 2);
+
+  if (a === 10 || a === 12 || a === 14 || a === 16 || a >= 18) {
+    spr[snWin].visible = true;
   } else {
-    spr[sn_win].visible = false;
+    spr[snWin].visible = false;
   }
-  if (a == 10) {
-    playSound("snd_clear");
+
+  if (a === 10) {
+    playSound('snd_clear');
   }
 
   if (a >= 40) {
-    timer_func = null;
-    spr[sn_btn + 6].x = view_w / 2;
-    spr[sn_btn + 6].y = view_h / 2 + resize(70);
-    spr[sn_btn + 6].visible = true;
-    btn_func[6] = start_history;
+    timerFunc = null;
+    spr[snBtn + 6].x = viewW / 2;
+    spr[snBtn + 6].y = viewH / 2 + resize(70);
+    spr[snBtn + 6].visible = true;
+    btnFunc[6] = startHistory;
   }
   stage.update();
-}
+};
 
-////////////////////////////////////////////////////
 // Log
-////////////////////////////////////////////////////
+const playHistory = () => {
+  let an;
 
-function start_history() {
-  var i;
-
-  spr[sn_win].visible = false;
-  spr[sn_gameover].visible = false;
-  spr[sn_ban].visible = false;
-  for (i = 0; i < 8; i++) spr[sn_player + i].visible = false;
-  for (i = 0; i < bmax; i++) spr[sn_btn + i].visible = false;
-
-  for (i = 0; i < game.AREA_MAX; i++) {
-    if (game.adat[i].size == 0) continue;
-    game.adat[i].dice = game.his_dice[i];
-    game.adat[i].arm = game.his_arm[i];
-    draw_areashape(sn_area + i, i, 0);
-  }
-  for (i = 0; i < game.AREA_MAX; i++) {
-    draw_areadice(sn_dice + i, prio[i].an);
-  }
-
-  // button
-  spr[sn_btn + 5].x = view_w / 2 - resize(100);
-  spr[sn_btn + 5].y = view_h * 0.88;
-  spr[sn_btn + 5].visible = true;
-  btn_func[5] = start_title;
-  spr[sn_btn + 1].x = view_w / 2 + resize(100);
-  spr[sn_btn + 1].y = view_h * 0.88;
-  spr[sn_btn + 1].visible = true;
-  btn_func[1] = toppage;
-
-  stage.update();
-  replay_c = 0;
-  stat = 0;
-  waitcount = 0;
-  timer_func = play_history;
-  click_func = null;
-  move_func = null;
-  releaese_func = null;
-}
-
-function play_history() {
-  var an;
-  if (stat == 0) {
-    if (replay_c >= game.his_c) {
-      timer_func = null; // end
+  if (stat === 0) {
+    if (replayC >= game.his_c) {
+      timerFunc = null; // end
     } else {
-      stat = game.his[replay_c].to == 0 ? 1 : 2;
+      stat = game.his[replayC].to === 0 ? 1 : 2;
     }
-  } else if (stat == 1) {
+  } else if (stat === 1) {
     // replenishment
-    an = game.his[replay_c].from;
-    game.adat[an].dice++;
-    draw_areadice(an2sn[an], an);
+    an = game.his[replayC].from;
+    game.adat[an].dice += 1;
+    drawAreadice(an2sn[an], an);
     stage.update();
-    replay_c++;
+    replayC += 1;
 
-    if (replay_c >= game.his_c) {
-      timer_func = null; // end
+    if (replayC >= game.his_c) {
+      timerFunc = null; // end
     } else {
-      stat = game.his[replay_c].to == 0 ? 1 : 2;
+      stat = game.his[replayC].to === 0 ? 1 : 2;
     }
-  } else if (stat == 2) {
+  } else if (stat === 2) {
     // attack origin
-    an = game.his[replay_c].from;
-    draw_areashape(sn_from, an, 1);
+    an = game.his[replayC].from;
+    drawAreashape(snFrom, an, 1);
     stage.update();
     waitcount = 0;
-    stat++;
-  } else if (stat == 3) {
+    stat += 1;
+  } else if (stat === 3) {
     // target of attack
     if (waitcount > 2) {
-      an = game.his[replay_c].to;
-      draw_areashape(sn_to, an, 1);
+      an = game.his[replayC].to;
+      drawAreashape(snTo, an, 1);
       stage.update();
       waitcount = 0;
-      stat++;
+      stat += 1;
     }
-  } else if (stat == 4) {
+  } else if (stat === 4) {
     // After attack
     if (waitcount > 10) {
-      var an0 = game.his[replay_c].from;
-      var an1 = game.his[replay_c].to;
-      if (game.his[replay_c].res > 0) {
+      const an0 = game.his[replayC].from;
+      const an1 = game.his[replayC].to;
+
+      if (game.his[replayC].res > 0) {
         game.adat[an1].dice = game.adat[an0].dice - 1;
         game.adat[an0].dice = 1;
         game.adat[an1].arm = game.adat[an0].arm;
-        playSound("snd_success");
+        playSound('snd_success');
       } else {
         game.adat[an0].dice = 1;
-        playSound("snd_fail");
+        playSound('snd_fail');
       }
-      spr[sn_from].visible = false;
-      spr[sn_to].visible = false;
-      draw_areadice(an2sn[an0], an0);
-      draw_areadice(an2sn[an1], an1);
-      draw_areashape(sn_area + an1, an1, 0);
+      spr[snFrom].visible = false;
+      spr[snTo].visible = false;
+      drawAreadice(an2sn[an0], an0);
+      drawAreadice(an2sn[an1], an1);
+      drawAreashape(snArea + an1, an1, 0);
       stage.update();
       stat = 0;
-      replay_c++;
+      replayC += 1;
     }
   }
-  waitcount++;
-}
 
-////////////////////////////////////////////////////
-// Link
-////////////////////////////////////////////////////
+  waitcount += 1;
+};
 
-function toppage() {
-  location.href = "https://www.gamedesign.jp/";
-}
+const startHistory = () => {
+  let i;
+
+  spr[snWin].visible = false;
+  spr[snGameover].visible = false;
+  spr[snBan].visible = false;
+
+  for (i = 0; i < 8; i += 1) spr[snPlayer + i].visible = false;
+  for (i = 0; i < bmax; i += 1) spr[snBtn + i].visible = false;
+
+  for (i = 0; i < game.AREA_MAX; i += 1) {
+    if (game.adat[i].size === 0) continue;
+    game.adat[i].dice = game.his_dice[i];
+    game.adat[i].arm = game.his_arm[i];
+    drawAreashape(snArea + i, i, 0);
+  }
+  for (i = 0; i < game.AREA_MAX; i += 1) {
+    drawAreadice(snDice + i, prio[i].an);
+  }
+
+  // button
+  spr[snBtn + 5].x = viewW / 2 - resize(100);
+  spr[snBtn + 5].y = viewH * 0.88;
+  spr[snBtn + 5].visible = true;
+  btnFunc[5] = startTitle;
+  spr[snBtn + 1].x = viewW / 2 + resize(100);
+  spr[snBtn + 1].y = viewH * 0.88;
+  spr[snBtn + 1].visible = true;
+  btnFunc[1] = toppage;
+
+  stage.update();
+  replayC = 0;
+  stat = 0;
+  waitcount = 0;
+  timerFunc = playHistory;
+  clickFunc = null;
+  moveFunc = null;
+  releaseFunc = null;
+};

@@ -14,7 +14,7 @@
   },
   "scripts": {
     "start": "parcel src/index.html",
-    "lint": "nodemon --exec eslint src/**/*.{js,jsx}"
+    "lint": "nodemon --exec eslint src/main.{js,jsx}"
   },
   "author": "",
   "license": "ISC"
