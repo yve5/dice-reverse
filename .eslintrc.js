@@ -20,7 +20,6 @@ module.exports = {
 
     // to remove
     eqeqeq: 'off',
-    camelcase: 'off',
     'no-unused-vars': 'off',
     'nonblock-statement-body-position': 'off',
     'one-var-declaration-per-line': 'off',
@@ -29,10 +28,8 @@ module.exports = {
     'no-multi-assign': 'off',
     'new-cap': 'off',
     'no-new-func': 'off',
-    'no-new-func': 'off',
     'no-array-constructor': 'off',
     'func-names': 'off',
-    'no-shadow': 'off',
     'no-undef': 'off',
     'prefer-template': 'off',
     'prefer-const': 'off',
@@ -42,6 +39,8 @@ module.exports = {
     'prefer-destructuring': 'off',
     'no-restricted-globals': 'off',
     'no-new-object': 'off',
-    curly: 'off',
+
+    // to check
+    camelcase: 'off',
   },
 };

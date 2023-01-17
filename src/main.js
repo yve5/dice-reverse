@@ -184,6 +184,7 @@ function init() {
   // area dice
   snDice = sn;
   builder = new createjs.SpriteSheetBuilder();
+
   let mc = new lib.areadice();
   let rect = new createjs.Rectangle(0, 0, 80, 100);
   builder.addMovieClip(mc, rect, nume / deno);
@@ -406,7 +407,7 @@ function init() {
     queue.addEventListener('complete', handleComplete);
   } else {
     waitcount = 60;
-    timerFunc = fake_loading;
+    timerFunc = fakeLoading;
   }
 }
 
@@ -419,7 +420,7 @@ function handleFileLoad(event) {
 
 function handleComplete(event) {
   waitcount = 30;
-  timerFunc = fake_loading;
+  timerFunc = fakeLoading;
 }
 
 let instance = new Array();
@@ -466,21 +467,29 @@ function onTick() {
   if (timerFunc != null) {
     timerFunc();
   }
-  check_button();
+  checkButton();
 }
 
 // button
-function check_button() {
-  let i, sn;
+function checkButton() {
+  let sn;
   let n = -1;
-  for (i = 0; i < bmax; i += 1) {
+
+  for (let i = 0; i < bmax; i += 1) {
     sn = snBtn + i;
-    if (!spr[sn].visible) continue;
+    if (!spr[sn].visible) {
+      continue;
+    }
     let pt = spr[sn].globalToLocal(stage.mouseX, stage.mouseY);
     if (spr[sn].hitTest(pt.x, pt.y)) n = i;
   }
-  if (activebutton == n) return;
+
+  if (activebutton == n) {
+    return;
+  }
+
   activebutton = n;
+
   for (let i = 0; i < bmax; i += 1) {
     if (i == activebutton) {
       spr[snBtn + i].getChildAt(0).gotoAndStop('press');
@@ -492,7 +501,7 @@ function check_button() {
 }
 
 // Loading
-function fake_loading() {
+function fakeLoading() {
   spr[snLoad].visible = true;
   spr[snLoad].text = ' ';
   spr[snMes].visible = true;
@@ -545,12 +554,12 @@ function startTitle() {
   stage.update();
 
   timerFunc = null;
-  clickFunc = click_pmax;
+  clickFunc = clickPmax;
   moveFunc = null;
   releaseFunc = null;
 }
 
-function click_pmax() {
+function clickPmax() {
   let i,
     pmax = -1;
   for (i = 0; i < 7; i += 1) {
@@ -573,7 +582,7 @@ function click_pmax() {
 }
 
 // Map creation screen
-function make_map() {
+function makeMap() {
   let i, j, x, y, n;
 
   for (i = 0; i < snMax; i += 1) spr[i].visible = false;
@@ -623,11 +632,11 @@ function make_map() {
   spr[snBtn + 2].x = resize(500);
   spr[snBtn + 2].y = yposMes;
   spr[snBtn + 2].visible = true;
-  btnFunc[2] = start_game;
+  btnFunc[2] = startGame;
   spr[snBtn + 3].x = resize(650);
   spr[snBtn + 3].y = yposMes;
   spr[snBtn + 3].visible = true;
-  btnFunc[3] = make_map;
+  btnFunc[3] = makeMap;
 
   stage.update();
 
@@ -637,31 +646,25 @@ function make_map() {
   releaseFunc = null;
 }
 
-function drawAreashape(sn, area, paint_mode) {
-  let i, j;
+function drawAreashape(sn, area, paintMode) {
+  let j;
 
   if (game.adat[area].size == 0) {
     spr[sn].visible = false;
     return;
   }
+
   spr[sn].visible = true;
   spr[sn].graphics.clear();
+
   let cnt = 0;
   let c = game.adat[area].line_cel[cnt];
   let d = game.adat[area].line_dir[cnt];
   let ax = [celW / 2, celW, celW, celW / 2, 0, 0, celW / 2];
-  let ax_left = [
-    celW / 2,
-    celW,
-    celW,
-    celW / 2,
-    -celW / 2,
-    -celW / 2,
-    celW / 2,
-  ];
+  let axLeft = [celW / 2, celW, celW, celW / 2, -celW / 2, -celW / 2, celW / 2];
   let s = (3 * nume) / deno;
   let ay = [-s, s, celH - s, celH + s, celH - s, s, -s];
-  let ay_top = [
+  let ayTop = [
     -celH / 2,
     -celH / 2,
     celH - s,
@@ -670,9 +673,14 @@ function drawAreashape(sn, area, paint_mode) {
     -celH / 2,
     -celH / 2,
   ];
-  let line_color = '#222244';
-  if (paint_mode) line_color = '#ff0000';
-  spr[sn].graphics.beginStroke(line_color);
+
+  let lineColor = '#222244';
+  if (paintMode) {
+    lineColor = '#ff0000';
+  }
+
+  spr[sn].graphics.beginStroke(lineColor);
+
   let armcolor = [
     '#b37ffe',
     '#b3ff01',
@@ -683,25 +691,33 @@ function drawAreashape(sn, area, paint_mode) {
     '#ffff01',
     '#ff5858',
   ];
+
   let color = armcolor[game.adat[area].arm];
-  if (paint_mode) color = '#000000';
+
+  if (paintMode) {
+    color = '#000000';
+  }
+
   spr[sn].graphics
     .setStrokeStyle((4 * nume) / deno, 'round', 'round')
     .beginFill(color);
+
   let px = ax[d];
   let py = ay[d];
   spr[sn].graphics.moveTo(cposX[c] + px, cposY[c] + py);
 
   for (let i = 0; i < 100; i += 1) {
     // Draw a line first
-    let px = ax[d + 1];
-    let py = ay[d + 1];
+    px = ax[d + 1];
+    py = ay[d + 1];
     spr[sn].graphics.lineTo(cposX[c] + px, cposY[c] + py);
     cnt += 1;
     c = game.adat[area].line_cel[cnt];
     d = game.adat[area].line_dir[cnt];
-    if (c == game.adat[area].line_cel[0] && d == game.adat[area].line_dir[0])
+
+    if (c == game.adat[area].line_cel[0] && d == game.adat[area].line_dir[0]) {
       break;
+    }
   }
 }
 
@@ -719,7 +735,7 @@ function drawAreadice(sn, area) {
 }
 
 // Start playing
-function start_game() {
+function startGame() {
   game.start_game();
   startPlayer();
 }
