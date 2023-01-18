@@ -4,17 +4,21 @@ let builder;
 let touchdev = false;
 
 // event function
-let timerFunc = new Function();
-timerFunc = null;
+// let timerFunc = new Function();
+// timerFunc = null;
+let timerFunc;
 
-let clickFunc = new Function();
-clickFunc = null;
+// let clickFunc = new Function();
+// clickFunc = null;
+let clickFunc;
 
-let moveFunc = new Function();
-moveFunc = null;
+// let moveFunc = new Function();
+// moveFunc = null;
+let moveFunc;
 
-let releaseFunc = new Function();
-releaseFunc = null;
+// let releaseFunc = new Function();
+// releaseFunc = null;
+let releaseFunc;
 
 let waitcount = 0;
 let stat = 0;
@@ -34,18 +38,20 @@ const org = {
 
 let nume = 1;
 let deno = 1;
-let viewW, viewH;
-let celW, celH; // The size of the card and
+let viewW;
+let viewH;
+let celW; // The size of the card and
+let celH;
 let yposMes; // Message, location of battle dice
 let yposArm; // Status display position for each army
-let dot; // Size of 1 dot
+// let dot; // Size of 1 dot
 
 // Cell drawing position
-const cposX = new Array();
-const cposY = new Array();
+const cposX = [];
+const cposY = [];
 
 // Sprite
-const spr = new Array();
+const spr = [];
 
 // Sprite Number
 let snArea = 0;
@@ -66,13 +72,13 @@ let snMes = 0;
 let snBtn = 0;
 let snMax = 0; // Maximum number
 
-const prio = new Array(); // Display order of area dice
-const an2sn = new Array(); // Returns the dice sprite number from the area number
+const prio = []; // Display order of area dice
+const an2sn = []; // Returns the dice sprite number from the area number
 
 // button
 let bmax = 0;
 let activebutton = -1;
-const btnFunc = new Array();
+const btnFunc = [];
 
 // battle class
 const Battle = function () {
@@ -85,7 +91,7 @@ const Battle = function () {
   this.usedice = [0, 1, 2, 3, 4, 5, 6, 7]; // Dice to use
 };
 
-const battle = new Array();
+const battle = [];
 let bturn = 0; // Turn for Battle
 
 // For replaying history
@@ -111,15 +117,13 @@ const toppage = () => {
 };
 
 // Resize to scale
-function resize(n) {
-  return (n * nume) / deno;
-}
+const resize = (n) => (n * nume) / deno;
 
 // launch
 window.addEventListener('load', init);
 
-function init() {
-  let i, j, c, n;
+const init = () => {
+  let c;
 
   canvas = document.getElementById('myCanvas');
   stage = new createjs.Stage(canvas);
@@ -145,6 +149,7 @@ function init() {
     nume = ih;
     deno = org.viewH;
   }
+
   viewW = Math.floor((org.viewW * nume) / deno);
   viewH = Math.floor((org.viewH * nume) / deno);
   stage.canvas.width = viewW;
@@ -154,15 +159,18 @@ function init() {
   yposMes = (org.yposMes * nume) / deno;
   yposArm = (org.yposArm * nume) / deno;
   dot = (1 * nume) / deno;
-  for (i = 0; i < 2; i += 1) battle[i] = new Battle();
+
+  for (let i = 0; i < 2; i += 1) {
+    battle[i] = new Battle();
+  }
 
   // Sprite Number
   let sn = 0;
 
   // Cell position
   c = 0;
-  for (i = 0; i < game.YMAX; i += 1) {
-    for (j = 0; j < game.XMAX; j += 1) {
+  for (let i = 0; i < game.YMAX; i += 1) {
+    for (let j = 0; j < game.XMAX; j += 1) {
       cposX[c] = j * celW;
       if (i % 2) cposX[c] += celW / 2;
       cposY[c] = i * celH;
@@ -172,7 +180,7 @@ function init() {
 
   // Area drawing +2 (attack source and destination)
   snArea = sn;
-  for (i = 0; i < game.AREA_MAX + 2; i += 1) {
+  for (let i = 0; i < game.AREA_MAX + 2; i += 1) {
     spr[sn] = new createjs.Shape();
     spr[sn].x = viewW / 2 - (game.XMAX * celW) / 2 - celW / 4;
     spr[sn].y = (50 * nume) / deno;
@@ -191,14 +199,14 @@ function init() {
   builder.addMovieClip(mc, rect, nume / deno);
 
   const spritesheet = builder.build();
-  for (i = 0; i < game.AREA_MAX; i += 1) {
+  for (let i = 0; i < game.AREA_MAX; i += 1) {
     spr[sn] = new createjs.Sprite(spritesheet);
     stage.addChild(spr[sn]);
     sn += 1;
   }
 
   // Area Dice Display Order
-  for (i = 0; i < game.AREA_MAX; i += 1) {
+  for (let i = 0; i < game.AREA_MAX; i += 1) {
     prio[i] = new Object();
     prio[i].an = i;
     prio[i].cpos = 0; // For later
@@ -216,7 +224,7 @@ function init() {
   sn += 1;
   snPlayer = sn;
 
-  for (i = 0; i < 8; i += 1) {
+  for (let i = 0; i < 8; i += 1) {
     const pd = new lib.mc();
     pd.scaleX = pd.scaleY = 0.12;
     pd.x = -22;
@@ -253,15 +261,15 @@ function init() {
     .drawRect(-org.viewW / 2, -50, org.viewW, 360);
   spr[sn].addChild(bgshape);
 
-  for (i = 0; i < 2; i += 1) {
-    for (j = 0; j < 8; j += 1) {
+  for (let i = 0; i < 2; i += 1) {
+    for (let j = 0; j < 8; j += 1) {
       const bs = new lib.mc();
       bs.scaleX = bs.scaleY = 0.15;
       bs.name = 's' + i + j;
       spr[sn].addChild(bs);
     }
 
-    for (j = 0; j < 8; j += 1) {
+    for (let j = 0; j < 8; j += 1) {
       const bd = new lib.mc();
       bd.scaleX = bd.scaleY = 0.15;
       bd.name = 'd' + i + j;
@@ -284,7 +292,7 @@ function init() {
   spr[sn].x = viewW / 2;
   spr[sn].scaleX = spr[sn].scaleY = nume / deno;
 
-  for (i = 0; i < game.STOCK_MAX; i += 1) {
+  for (let i = 0; i < game.STOCK_MAX; i += 1) {
     const sd = new lib.mc();
     const w = 40;
     sd.x = -(6.5 * w) + Math.floor(i / 4) * w - (i % 4) * w * 0.5;
@@ -336,12 +344,13 @@ function init() {
   snPmax = sn;
   spr[sn] = new createjs.Container();
 
-  for (i = 0; i < 7; i += 1) {
+  for (let i = 0; i < 7; i += 1) {
     const ptxt = new createjs.Text(
       i + 2 + ' players',
       Math.floor((32 * nume) / deno) + 'px Anton',
       '#aaaaaa'
     );
+
     ptxt.name = 'p' + i;
     ptxt.x =
       viewW / 2 -
@@ -389,11 +398,13 @@ function init() {
   ];
   bmax = btxt.length;
   snBtn = sn;
-  for (i = 0; i < bmax; i += 1) {
+
+  for (let i = 0; i < bmax; i += 1) {
     const bt = new lib.mc();
     spr[sn] = new createjs.Container();
     bt.gotoAndStop('btn');
     spr[sn].addChildAt(bt, 0);
+
     const txt = new createjs.Text(btxt[i], '32px Anton', 'Black');
     txt.textAlign = 'center';
     txt.textBaseline = 'middle';
@@ -404,14 +415,14 @@ function init() {
     spr[sn].visible = true;
     sn += 1;
 
-    // Button functions
-    btnFunc[i] = new Function();
-    btnFunc[i] = null;
+    // // Button functions
+    // btnFunc[i] = new Function();
+    // btnFunc[i] = null;
   }
 
   // Number of sprites
   snMax = sn;
-  for (i = 0; i < snMax; i += 1) spr[i].visible = false;
+  for (let i = 0; i < snMax; i += 1) spr[i].visible = false;
 
   stage.addEventListener('stagemousedown', mouseDownListner);
   stage.addEventListener('stagemousemove', mouseMoveListner);
@@ -430,48 +441,49 @@ function init() {
     waitcount = 60;
     timerFunc = fakeLoading;
   }
-}
+};
 
-function handleFileLoad(event) {
+const handleFileLoad = (event) => {
   const item = event.item;
+
   if (item.type == createjs.LoadQueue.SOUND) {
     startSound(item.id);
   }
-}
+};
 
-function handleComplete(event) {
+const handleComplete = () => {
   waitcount = 30;
   timerFunc = fakeLoading;
-}
+};
 
-const instance = new Array();
+const instance = [];
 
-function startSound(soundid) {
+const startSound = (soundid) => {
   instance[soundid] = createjs.Sound.createInstance(soundid); // Play SoundJS instance (specify id)
-}
+};
 
-function playSound(soundid) {
+const playSound = (soundid) => {
   if (!soundon) return;
   instance[soundid].setVolume(0.5);
   instance[soundid].play();
-}
+};
 
 // Event listener group
-function mouseDownListner(e) {
+const mouseDownListner = (e) => {
   if (clickFunc != null) {
     clickFunc(e);
   }
   canvas.style.cursor = 'default'; // Changing the mouse cursor
-}
+};
 
-function mouseMoveListner(e) {
+const mouseMoveListner = (e) => {
   if (moveFunc != null) {
     moveFunc(e);
   }
   canvas.style.cursor = 'default'; // Changing the mouse cursor
-}
+};
 
-function mouseUpListner(e) {
+const mouseUpListner = (e) => {
   if (releaseFunc != null) {
     releaseFunc(e);
   }
@@ -482,17 +494,17 @@ function mouseUpListner(e) {
       btnFunc[activebutton]();
     }
   }
-}
+};
 
-function onTick() {
+const onTick = () => {
   if (timerFunc != null) {
     timerFunc();
   }
   checkButton();
-}
+};
 
 // button
-function checkButton() {
+const checkButton = () => {
   let sn;
   let n = -1;
 
@@ -519,10 +531,10 @@ function checkButton() {
     }
   }
   stage.update();
-}
+};
 
 // Loading
-function fakeLoading() {
+const fakeLoading = () => {
   spr[snLoad].visible = true;
   spr[snLoad].text = ' ';
   spr[snMes].visible = true;
@@ -536,10 +548,10 @@ function fakeLoading() {
     timerFunc = null;
     startTitle();
   }
-}
+};
 
 // Title screen
-function startTitle() {
+const startTitle = () => {
   let i;
 
   for (i = 0; i < snMax; i += 1) spr[i].visible = false;
@@ -578,9 +590,9 @@ function startTitle() {
   clickFunc = clickPmax;
   moveFunc = null;
   releaseFunc = null;
-}
+};
 
-function clickPmax() {
+const clickPmax = () => {
   let pmax = -1;
 
   for (let i = 0; i < 7; i += 1) {
@@ -606,11 +618,13 @@ function clickPmax() {
       i == game.pmax - 2 ? '#aa0000' : '#cccccc';
   }
   stage.update();
-}
+};
 
 // Map creation screen
-function makeMap() {
-  let i, j, x, y, n;
+const makeMap = () => {
+  let i;
+  let j;
+  let n;
 
   for (i = 0; i < snMax; i += 1) spr[i].visible = false;
 
@@ -671,11 +685,9 @@ function makeMap() {
   clickFunc = null;
   moveFunc = null;
   releaseFunc = null;
-}
+};
 
-function drawAreashape(sn, area, paintMode) {
-  let j;
-
+const drawAreashape = (sn, area, paintMode) => {
   if (game.adat[area].size == 0) {
     spr[sn].visible = false;
     return;
@@ -687,27 +699,10 @@ function drawAreashape(sn, area, paintMode) {
   let cnt = 0;
   let c = game.adat[area].line_cel[cnt];
   let d = game.adat[area].line_dir[cnt];
+
   const ax = [celW / 2, celW, celW, celW / 2, 0, 0, celW / 2];
-  const axLeft = [
-    celW / 2,
-    celW,
-    celW,
-    celW / 2,
-    -celW / 2,
-    -celW / 2,
-    celW / 2,
-  ];
   const s = (3 * nume) / deno;
   const ay = [-s, s, celH - s, celH + s, celH - s, s, -s];
-  const ayTop = [
-    -celH / 2,
-    -celH / 2,
-    celH - s,
-    celH + s,
-    celH - s,
-    -celH / 2,
-    -celH / 2,
-  ];
 
   let lineColor = '#222244';
   if (paintMode) {
@@ -754,10 +749,10 @@ function drawAreashape(sn, area, paintMode) {
       break;
     }
   }
-}
+};
 
 // area dice
-function drawAreadice(sn, area) {
+const drawAreadice = (sn, area) => {
   if (game.adat[area].size == 0) {
     spr[sn].visible = false;
     return;
@@ -767,16 +762,16 @@ function drawAreadice(sn, area) {
   spr[sn].x = Math.floor(cposX[n] + (6 * nume) / deno);
   spr[sn].y = Math.floor(cposY[n] - (10 * nume) / deno);
   spr[sn].gotoAndStop(game.adat[area].arm * 10 + game.adat[area].dice - 1);
-}
+};
 
 // Start playing
-function startGame() {
+const startGame = () => {
   game.start_game();
   startPlayer();
-}
+};
 
 // player state
-function drawPlayerData() {
+const drawPlayerData = () => {
   let pnum = 0;
 
   for (let i = 0; i < 8; i += 1) {
@@ -819,7 +814,7 @@ function drawPlayerData() {
     }
     c += 1;
   }
-}
+};
 
 // It's my turn
 const startPlayer = () => {
