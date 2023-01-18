@@ -120,8 +120,6 @@ const toppage = () => {
 const resize = (n) => (n * nume) / deno;
 
 // launch
-window.addEventListener('load', init);
-
 const init = () => {
   let c;
 
@@ -158,7 +156,7 @@ const init = () => {
   celH = (org.celH * nume) / deno;
   yposMes = (org.yposMes * nume) / deno;
   yposArm = (org.yposArm * nume) / deno;
-  dot = (1 * nume) / deno;
+  // dot = (1 * nume) / deno;
 
   for (let i = 0; i < 2; i += 1) {
     battle[i] = new Battle();
@@ -172,7 +170,9 @@ const init = () => {
   for (let i = 0; i < game.YMAX; i += 1) {
     for (let j = 0; j < game.XMAX; j += 1) {
       cposX[c] = j * celW;
-      if (i % 2) cposX[c] += celW / 2;
+      if (i % 2) {
+        cposX[c] += celW / 2;
+      }
       cposY[c] = i * celH;
       c += 1;
     }
@@ -422,7 +422,9 @@ const init = () => {
 
   // Number of sprites
   snMax = sn;
-  for (let i = 0; i < snMax; i += 1) spr[i].visible = false;
+  for (let i = 0; i < snMax; i += 1) {
+    spr[i].visible = false;
+  }
 
   stage.addEventListener('stagemousedown', mouseDownListner);
   stage.addEventListener('stagemousemove', mouseMoveListner);
@@ -443,8 +445,10 @@ const init = () => {
   }
 };
 
+window.addEventListener('load', init);
+
 const handleFileLoad = (event) => {
-  const item = event.item;
+  const item = { ...event.item };
 
   if (item.type == createjs.LoadQueue.SOUND) {
     startSound(item.id);
@@ -463,7 +467,9 @@ const startSound = (soundid) => {
 };
 
 const playSound = (soundid) => {
-  if (!soundon) return;
+  if (!soundon) {
+    return;
+  }
   instance[soundid].setVolume(0.5);
   instance[soundid].play();
 };
@@ -514,7 +520,9 @@ const checkButton = () => {
       continue;
     }
     const pt = spr[sn].globalToLocal(stage.mouseX, stage.mouseY);
-    if (spr[sn].hitTest(pt.x, pt.y)) n = i;
+    if (spr[sn].hitTest(pt.x, pt.y)) {
+      n = i;
+    }
   }
 
   if (activebutton == n) {
@@ -554,7 +562,9 @@ const fakeLoading = () => {
 const startTitle = () => {
   let i;
 
-  for (i = 0; i < snMax; i += 1) spr[i].visible = false;
+  for (i = 0; i < snMax; i += 1) {
+    spr[i].visible = false;
+  }
 
   spr[snTitle].visible = true;
   spr[snTitle].x = 0;
@@ -626,7 +636,9 @@ const makeMap = () => {
   let j;
   let n;
 
-  for (i = 0; i < snMax; i += 1) spr[i].visible = false;
+  for (i = 0; i < snMax; i += 1) {
+    spr[i].visible = false;
+  }
 
   game.make_map();
 
@@ -792,7 +804,7 @@ const drawPlayerData = () => {
     }
 
     const sn = snPlayer + i;
-    w = (100 * nume) / deno;
+    const w = (100 * nume) / deno;
 
     const ox = viewW / 2 - ((pnum - 1) * w) / 2 + c * w;
 
@@ -1097,7 +1109,9 @@ const battleDice = () => {
   let soundflg = false;
 
   for (let i = 0; i < 8; i += 1) {
-    if (battle[bturn].fin[i] > 0) continue;
+    if (battle[bturn].fin[i] > 0) {
+      continue;
+    }
 
     const o = spr[snBattle].getChildByName(`d${bturn}${i}`);
 
@@ -1234,7 +1248,9 @@ const afterBattle = () => {
     let c = 0;
 
     for (let i = 0; i < game.pmax; i += 1) {
-      if (game.player[i].area_tc > 0) c += 1;
+      if (game.player[i].area_tc > 0) {
+        c += 1;
+      }
     }
 
     if (c === 1) {
@@ -1285,11 +1301,18 @@ const startSupply = () => {
 const nextPlayer = () => {
   for (let i = 0; i < game.pmax; i += 1) {
     game.ban += 1;
-    if (game.ban >= game.pmax) game.ban = 0;
+    if (game.ban >= game.pmax) {
+      game.ban = 0;
+    }
+
     const pn = game.jun[game.ban];
-    if (game.player[pn].area_tc) break;
+    if (game.player[pn].area_tc) {
+      break;
+    }
   }
-  if (game.jun[game.ban] === game.user) playSound('snd_myturn');
+  if (game.jun[game.ban] === game.user) {
+    playSound('snd_myturn');
+  }
 
   startPlayer();
 };
@@ -1300,9 +1323,15 @@ const supplyDice = () => {
   let c = 0;
 
   for (let i = 0; i < game.AREA_MAX; i += 1) {
-    if (game.adat[i].size === 0) continue;
-    if (game.adat[i].arm !== pn) continue;
-    if (game.adat[i].dice >= 8) continue;
+    if (game.adat[i].size === 0) {
+      continue;
+    }
+    if (game.adat[i].arm !== pn) {
+      continue;
+    }
+    if (game.adat[i].dice >= 8) {
+      continue;
+    }
     list[c] = i;
     c += 1;
   }
@@ -1511,22 +1540,29 @@ const playHistory = () => {
 };
 
 const startHistory = () => {
-  let i;
-
   spr[snWin].visible = false;
   spr[snGameover].visible = false;
   spr[snBan].visible = false;
 
-  for (i = 0; i < 8; i += 1) spr[snPlayer + i].visible = false;
-  for (i = 0; i < bmax; i += 1) spr[snBtn + i].visible = false;
+  for (let i = 0; i < 8; i += 1) {
+    spr[snPlayer + i].visible = false;
+  }
 
-  for (i = 0; i < game.AREA_MAX; i += 1) {
-    if (game.adat[i].size === 0) continue;
+  for (let i = 0; i < bmax; i += 1) {
+    spr[snBtn + i].visible = false;
+  }
+
+  for (let i = 0; i < game.AREA_MAX; i += 1) {
+    if (game.adat[i].size === 0) {
+      continue;
+    }
+
     game.adat[i].dice = game.his_dice[i];
     game.adat[i].arm = game.his_arm[i];
     drawAreashape(snArea + i, i, 0);
   }
-  for (i = 0; i < game.AREA_MAX; i += 1) {
+
+  for (let i = 0; i < game.AREA_MAX; i += 1) {
     drawAreadice(snDice + i, prio[i].an);
   }
 
