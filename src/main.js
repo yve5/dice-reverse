@@ -20,10 +20,10 @@ let waitcount = 0;
 let stat = 0;
 
 // game object
-let game = new Game();
+const game = new Game();
 
 // Display position
-let org = {
+const org = {
   viewW: 840,
   viewH: 840,
   celW: 27,
@@ -41,11 +41,11 @@ let yposArm; // Status display position for each army
 let dot; // Size of 1 dot
 
 // Cell drawing position
-let cposX = new Array();
-let cposY = new Array();
+const cposX = new Array();
+const cposY = new Array();
 
 // Sprite
-let spr = new Array();
+const spr = new Array();
 
 // Sprite Number
 let snArea = 0;
@@ -66,16 +66,16 @@ let snMes = 0;
 let snBtn = 0;
 let snMax = 0; // Maximum number
 
-let prio = new Array(); // Display order of area dice
-let an2sn = new Array(); // Returns the dice sprite number from the area number
+const prio = new Array(); // Display order of area dice
+const an2sn = new Array(); // Returns the dice sprite number from the area number
 
 // button
 let bmax = 0;
 let activebutton = -1;
-let btnFunc = new Array();
+const btnFunc = new Array();
 
 // battle class
-let Battle = function () {
+const Battle = function () {
   this.dn = 0; // Dice number (position to stop)
   this.arm = 0; // Dice color
   this.dmax = 0; // Number of Dice
@@ -85,7 +85,7 @@ let Battle = function () {
   this.usedice = [0, 1, 2, 3, 4, 5, 6, 7]; // Dice to use
 };
 
-let battle = new Array();
+const battle = new Array();
 let bturn = 0; // Turn for Battle
 
 // For replaying history
@@ -94,7 +94,7 @@ let replayC = 0;
 // Sound related
 // let soundon = true;
 let soundon = false;
-let manifest = [
+const manifest = [
   { src: './sound/button.wav', id: 'snd_button' },
   { src: './sound/clear.wav', id: 'snd_clear' },
   { src: './sound/click.wav', id: 'snd_click' },
@@ -135,8 +135,9 @@ function init() {
   }
 
   // Indicates location
-  let iw = window.innerWidth;
-  let ih = window.innerHeight;
+  const iw = window.innerWidth;
+  const ih = window.innerHeight;
+
   if (iw / org.viewW < ih / org.viewH) {
     nume = iw;
     deno = org.viewW;
@@ -185,10 +186,11 @@ function init() {
   snDice = sn;
   builder = new createjs.SpriteSheetBuilder();
 
-  let mc = new lib.areadice();
-  let rect = new createjs.Rectangle(0, 0, 80, 100);
+  const mc = new lib.areadice();
+  const rect = new createjs.Rectangle(0, 0, 80, 100);
   builder.addMovieClip(mc, rect, nume / deno);
-  let spritesheet = builder.build();
+
+  const spritesheet = builder.build();
   for (i = 0; i < game.AREA_MAX; i += 1) {
     spr[sn] = new createjs.Sprite(spritesheet);
     stage.addChild(spr[sn]);
@@ -213,18 +215,21 @@ function init() {
   spr[sn].scaleY = nume / deno;
   sn += 1;
   snPlayer = sn;
+
   for (i = 0; i < 8; i += 1) {
-    let pd = new lib.mc();
+    const pd = new lib.mc();
     pd.scaleX = pd.scaleY = 0.12;
     pd.x = -22;
     pd.y = 0;
     spr[sn] = new createjs.Container();
     spr[sn].addChildAt(pd, 0);
-    let txt = new createjs.Text('', '32px Anton', 'Black');
+
+    const txt = new createjs.Text('', '32px Anton', 'Black');
     txt.textBaseline = 'middle';
     txt.x = 5;
     spr[sn].addChildAt(txt, 1);
-    let txt2 = new createjs.Text('', '16px Anton', 'Black');
+
+    const txt2 = new createjs.Text('', '16px Anton', 'Black');
     txt2.textBaseline = 'middle';
     txt2.x = 5;
     txt2.y = 28;
@@ -241,25 +246,29 @@ function init() {
   spr[sn].y = yposMes;
   spr[sn].x = viewW / 2;
   spr[sn].scaleX = spr[sn].scaleY = nume / deno;
-  let bgshape = new createjs.Shape();
+
+  const bgshape = new createjs.Shape();
   bgshape.graphics
     .beginFill('rgba(255,255,255,0.8)')
     .drawRect(-org.viewW / 2, -50, org.viewW, 360);
   spr[sn].addChild(bgshape);
+
   for (i = 0; i < 2; i += 1) {
     for (j = 0; j < 8; j += 1) {
-      let bs = new lib.mc();
+      const bs = new lib.mc();
       bs.scaleX = bs.scaleY = 0.15;
       bs.name = 's' + i + j;
       spr[sn].addChild(bs);
     }
+
     for (j = 0; j < 8; j += 1) {
-      let bd = new lib.mc();
+      const bd = new lib.mc();
       bd.scaleX = bd.scaleY = 0.15;
       bd.name = 'd' + i + j;
       spr[sn].addChild(bd);
     }
-    let txt = new createjs.Text('37', '80px Anton', 'Black');
+
+    const txt = new createjs.Text('37', '80px Anton', 'Black');
     txt.textBaseline = 'middle';
     txt.textAlign = 'center';
     txt.name = 'n' + i;
@@ -274,9 +283,10 @@ function init() {
   spr[sn].y = yposMes;
   spr[sn].x = viewW / 2;
   spr[sn].scaleX = spr[sn].scaleY = nume / deno;
+
   for (i = 0; i < game.STOCK_MAX; i += 1) {
-    let sd = new lib.mc();
-    let w = 40;
+    const sd = new lib.mc();
+    const w = 40;
     sd.x = -(6.5 * w) + Math.floor(i / 4) * w - (i % 4) * w * 0.5;
     sd.y = -w * 0.7 + (Math.floor(i % 4) * w) / 2;
     sd.gotoAndStop('d00');
@@ -292,13 +302,15 @@ function init() {
   spr[sn].x = viewW / 2;
   spr[sn].y = viewH / 2;
   spr[sn].scaleX = spr[sn].scaleY = nume / deno;
-  let goshape = new createjs.Shape();
+
+  const goshape = new createjs.Shape();
   goshape.graphics
     .beginFill('#000000')
     .drawRect(-org.viewW / 2 + 10, -180, org.viewW - 20, 360);
   goshape.name = 'bg';
   spr[sn].addChild(goshape);
-  let gotext = new createjs.Text('G A M E O V E R', '80px Anton', 'White');
+
+  const gotext = new createjs.Text('G A M E O V E R', '80px Anton', 'White');
   gotext.textBaseline = 'middle';
   gotext.textAlign = 'center';
   gotext.name = 'mes';
@@ -323,8 +335,9 @@ function init() {
   // Number of players setting
   snPmax = sn;
   spr[sn] = new createjs.Container();
+
   for (i = 0; i < 7; i += 1) {
-    let ptxt = new createjs.Text(
+    const ptxt = new createjs.Text(
       i + 2 + ' players',
       Math.floor((32 * nume) / deno) + 'px Anton',
       '#aaaaaa'
@@ -365,15 +378,23 @@ function init() {
   sn += 1;
 
   // button
-  let btxt = ['START', 'TOP PAGE', 'YES', 'NO', 'END TURN', 'TITLE', 'HISTORY'];
+  const btxt = [
+    'START',
+    'TOP PAGE',
+    'YES',
+    'NO',
+    'END TURN',
+    'TITLE',
+    'HISTORY',
+  ];
   bmax = btxt.length;
   snBtn = sn;
   for (i = 0; i < bmax; i += 1) {
-    let bt = new lib.mc();
+    const bt = new lib.mc();
     spr[sn] = new createjs.Container();
     bt.gotoAndStop('btn');
     spr[sn].addChildAt(bt, 0);
-    let txt = new createjs.Text(btxt[i], '32px Anton', 'Black');
+    const txt = new createjs.Text(btxt[i], '32px Anton', 'Black');
     txt.textAlign = 'center';
     txt.textBaseline = 'middle';
     spr[sn].addChildAt(txt, 1);
@@ -400,7 +421,7 @@ function init() {
 
   if (soundon) {
     // Load sound in the case of a PC
-    let queue = new createjs.LoadQueue(false);
+    const queue = new createjs.LoadQueue(false);
     queue.installPlugin(createjs.Sound);
     queue.loadManifest(manifest, true);
     queue.addEventListener('fileload', handleFileLoad);
@@ -412,7 +433,7 @@ function init() {
 }
 
 function handleFileLoad(event) {
-  let item = event.item;
+  const item = event.item;
   if (item.type == createjs.LoadQueue.SOUND) {
     startSound(item.id);
   }
@@ -423,7 +444,7 @@ function handleComplete(event) {
   timerFunc = fakeLoading;
 }
 
-let instance = new Array();
+const instance = new Array();
 
 function startSound(soundid) {
   instance[soundid] = createjs.Sound.createInstance(soundid); // Play SoundJS instance (specify id)
@@ -480,7 +501,7 @@ function checkButton() {
     if (!spr[sn].visible) {
       continue;
     }
-    let pt = spr[sn].globalToLocal(stage.mouseX, stage.mouseY);
+    const pt = spr[sn].globalToLocal(stage.mouseX, stage.mouseY);
     if (spr[sn].hitTest(pt.x, pt.y)) n = i;
   }
 
@@ -545,7 +566,7 @@ function startTitle() {
   spr[snBtn + 0].x = resize(640);
   spr[snBtn + 0].y = resize(390);
   spr[snBtn + 0].visible = true;
-  btnFunc[0] = make_map;
+  btnFunc[0] = makeMap;
   spr[snBtn + 1].x = resize(640);
   spr[snBtn + 1].y = resize(490);
   spr[snBtn + 1].visible = true;
@@ -560,11 +581,12 @@ function startTitle() {
 }
 
 function clickPmax() {
-  let i,
-    pmax = -1;
-  for (i = 0; i < 7; i += 1) {
-    let o = spr[snPmax].getChildByName('p' + i);
-    let pt = o.globalToLocal(stage.mouseX, stage.mouseY);
+  let pmax = -1;
+
+  for (let i = 0; i < 7; i += 1) {
+    const o = spr[snPmax].getChildByName('p' + i);
+    const pt = o.globalToLocal(stage.mouseX, stage.mouseY);
+
     if (
       Math.abs(pt.x) < (70 * nume) / deno &&
       Math.abs(pt.y) < (20 * nume) / deno
@@ -572,9 +594,14 @@ function clickPmax() {
       pmax = i + 2;
     }
   }
-  if (pmax < 0) return;
+
+  if (pmax < 0) {
+    return;
+  }
+
   game.pmax = pmax;
-  for (i = 0; i < 7; i += 1) {
+
+  for (let i = 0; i < 7; i += 1) {
     spr[snPmax].getChildByName('p' + i).color =
       i == game.pmax - 2 ? '#aa0000' : '#cccccc';
   }
@@ -660,11 +687,19 @@ function drawAreashape(sn, area, paintMode) {
   let cnt = 0;
   let c = game.adat[area].line_cel[cnt];
   let d = game.adat[area].line_dir[cnt];
-  let ax = [celW / 2, celW, celW, celW / 2, 0, 0, celW / 2];
-  let axLeft = [celW / 2, celW, celW, celW / 2, -celW / 2, -celW / 2, celW / 2];
-  let s = (3 * nume) / deno;
-  let ay = [-s, s, celH - s, celH + s, celH - s, s, -s];
-  let ayTop = [
+  const ax = [celW / 2, celW, celW, celW / 2, 0, 0, celW / 2];
+  const axLeft = [
+    celW / 2,
+    celW,
+    celW,
+    celW / 2,
+    -celW / 2,
+    -celW / 2,
+    celW / 2,
+  ];
+  const s = (3 * nume) / deno;
+  const ay = [-s, s, celH - s, celH + s, celH - s, s, -s];
+  const ayTop = [
     -celH / 2,
     -celH / 2,
     celH - s,
@@ -681,7 +716,7 @@ function drawAreashape(sn, area, paintMode) {
 
   spr[sn].graphics.beginStroke(lineColor);
 
-  let armcolor = [
+  const armcolor = [
     '#b37ffe',
     '#b3ff01',
     '#009302',
@@ -728,7 +763,7 @@ function drawAreadice(sn, area) {
     return;
   }
   spr[sn].visible = true;
-  let n = game.adat[area].cpos;
+  const n = game.adat[area].cpos;
   spr[sn].x = Math.floor(cposX[n] + (6 * nume) / deno);
   spr[sn].y = Math.floor(cposY[n] - (10 * nume) / deno);
   spr[sn].gotoAndStop(game.adat[area].arm * 10 + game.adat[area].dice - 1);
@@ -746,7 +781,7 @@ function drawPlayerData() {
 
   for (let i = 0; i < 8; i += 1) {
     spr[snPlayer + i].visible = false;
-    let p = game.jun[i];
+    const p = game.jun[i];
 
     if (game.player[p].area_tc > 0) {
       spr[snPlayer + i].visible = true;
@@ -891,7 +926,7 @@ const firstClick = () => {
 // second time
 const secondClick = () => {
   const p = game.jun[game.ban];
-  let an = clickedArea();
+  const an = clickedArea();
 
   if (an < 0) {
     return;
@@ -1283,7 +1318,7 @@ const supplyDice = () => {
   }
 
   game.player[pn].stock -= 1;
-  let an = list[Math.floor(Math.random() * c)];
+  const an = list[Math.floor(Math.random() * c)];
   game.adat[an].dice += 1;
   drawAreadice(an2sn[an], an);
 
@@ -1335,7 +1370,7 @@ const gameover = () => {
   waitcount += 1;
 
   if (stat === 0) {
-    let a = (-80 + waitcount) / 100;
+    const a = (-80 + waitcount) / 100;
     spr[snGameover].getChildByName('bg').alpha = a;
 
     if (a > 0.8) {

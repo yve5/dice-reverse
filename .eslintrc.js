@@ -19,6 +19,9 @@ module.exports = {
     'linebreak-style': 'off',
 
     // to remove
+    'func-style': ['off', 'expression', { allowArrowFunctions: true }],
+    curly: ['off', 'all'],
+
     eqeqeq: 'off',
     'no-unused-vars': 'off',
     'nonblock-statement-body-position': 'off',
@@ -32,15 +35,13 @@ module.exports = {
     'func-names': 'off',
     'no-undef': 'off',
     'prefer-template': 'off',
-    'prefer-const': 'off',
+    // 'prefer-const': 'off',
     'no-useless-return': 'off',
     'no-use-before-define': 'off',
     'no-continue': 'off',
     'prefer-destructuring': 'off',
     'no-restricted-globals': 'off',
     'no-new-object': 'off',
-
-    // to check
-    camelcase: 'off',
+    // camelcase: 'off',
   },
 };
