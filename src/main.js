@@ -126,7 +126,7 @@ const init = () => {
   canvas = document.getElementById('myCanvas');
   stage = new createjs.Stage(canvas);
 
-  if (createjs.Touch.isSupported() == true) {
+  if (createjs.Touch.isSupported() === true) {
     createjs.Touch.enable(stage);
     touchdev = true;
   }
@@ -207,7 +207,7 @@ const init = () => {
 
   // Area Dice Display Order
   for (let i = 0; i < game.AREA_MAX; i += 1) {
-    prio[i] = new Object();
+    prio[i] = {};
     prio[i].an = i;
     prio[i].cpos = 0; // For later
   }
@@ -226,7 +226,8 @@ const init = () => {
 
   for (let i = 0; i < 8; i += 1) {
     const pd = new lib.mc();
-    pd.scaleX = pd.scaleY = 0.12;
+    pd.scaleX = 0.12;
+    pd.scaleY = 0.12;
     pd.x = -22;
     pd.y = 0;
     spr[sn] = new createjs.Container();
@@ -253,7 +254,8 @@ const init = () => {
   spr[sn] = new createjs.Container();
   spr[sn].y = yposMes;
   spr[sn].x = viewW / 2;
-  spr[sn].scaleX = spr[sn].scaleY = nume / deno;
+  spr[sn].scaleX = nume / deno;
+  spr[sn].scaleY = nume / deno;
 
   const bgshape = new createjs.Shape();
   bgshape.graphics
@@ -264,22 +266,24 @@ const init = () => {
   for (let i = 0; i < 2; i += 1) {
     for (let j = 0; j < 8; j += 1) {
       const bs = new lib.mc();
-      bs.scaleX = bs.scaleY = 0.15;
-      bs.name = 's' + i + j;
+      bs.scaleX = 0.15;
+      bs.scaleY = 0.15;
+      bs.name = `s${i}${j}`;
       spr[sn].addChild(bs);
     }
 
     for (let j = 0; j < 8; j += 1) {
       const bd = new lib.mc();
-      bd.scaleX = bd.scaleY = 0.15;
-      bd.name = 'd' + i + j;
+      bd.scaleX = 0.15;
+      bd.scaleY = 0.15;
+      bd.name = `d${i}${j}`;
       spr[sn].addChild(bd);
     }
 
     const txt = new createjs.Text('37', '80px Anton', 'Black');
     txt.textBaseline = 'middle';
     txt.textAlign = 'center';
-    txt.name = 'n' + i;
+    txt.name = `n${i}`;
     spr[sn].addChild(txt);
   }
   stage.addChild(spr[sn]);
@@ -290,7 +294,8 @@ const init = () => {
   spr[sn] = new createjs.Container();
   spr[sn].y = yposMes;
   spr[sn].x = viewW / 2;
-  spr[sn].scaleX = spr[sn].scaleY = nume / deno;
+  spr[sn].scaleX = nume / deno;
+  spr[sn].scaleY = nume / deno;
 
   for (let i = 0; i < game.STOCK_MAX; i += 1) {
     const sd = new lib.mc();
@@ -298,7 +303,8 @@ const init = () => {
     sd.x = -(6.5 * w) + Math.floor(i / 4) * w - (i % 4) * w * 0.5;
     sd.y = -w * 0.7 + (Math.floor(i % 4) * w) / 2;
     sd.gotoAndStop('d00');
-    sd.scaleX = sd.scaleY = 0.1;
+    sd.scaleX = 0.1;
+    sd.scaleY = 0.1;
     spr[sn].addChildAt(sd, i);
   }
   stage.addChild(spr[sn]);
@@ -309,7 +315,8 @@ const init = () => {
   spr[sn] = new createjs.Container();
   spr[sn].x = viewW / 2;
   spr[sn].y = viewH / 2;
-  spr[sn].scaleX = spr[sn].scaleY = nume / deno;
+  spr[sn].scaleX = nume / deno;
+  spr[sn].scaleY = nume / deno;
 
   const goshape = new createjs.Shape();
   goshape.graphics
@@ -329,14 +336,16 @@ const init = () => {
   // You Win
   snWin = sn;
   spr[sn] = new lib.mc();
-  spr[sn].scaleX = spr[sn].scaleY = nume / deno;
+  spr[sn].scaleX = nume / deno;
+  spr[sn].scaleY = nume / deno;
   stage.addChild(spr[sn]);
   sn += 1;
 
   // Title screen
   snTitle = sn;
   spr[sn] = new lib.mc();
-  spr[sn].scaleX = spr[sn].scaleY = nume / deno;
+  spr[sn].scaleX = nume / deno;
+  spr[sn].scaleY = nume / deno;
   stage.addChild(spr[sn]);
   sn += 1;
 
@@ -346,12 +355,12 @@ const init = () => {
 
   for (let i = 0; i < 7; i += 1) {
     const ptxt = new createjs.Text(
-      i + 2 + ' players',
-      Math.floor((32 * nume) / deno) + 'px Anton',
+      `${i + 2} players`,
+      `${Math.floor((32 * nume) / deno)}px Anton`,
       '#aaaaaa'
     );
 
-    ptxt.name = 'p' + i;
+    ptxt.name = `p${i}`;
     ptxt.x =
       viewW / 2 -
       (280 * nume) / deno +
@@ -368,7 +377,7 @@ const init = () => {
   snLoad = sn;
   spr[sn] = new createjs.Text(
     'Now loading...',
-    Math.floor((24 * nume) / deno) + 'px Anton',
+    `${Math.floor((24 * nume) / deno)}px Anton`,
     '#000000'
   );
   stage.addChild(spr[sn]);
@@ -378,7 +387,7 @@ const init = () => {
   snMes = sn;
   spr[sn] = new createjs.Text(
     'Now loading...',
-    Math.floor((30 * nume) / deno) + 'px Roboto',
+    `${Math.floor((30 * nume) / deno)}px Roboto`,
     '#000000'
   );
   spr[sn].textAlign = 'center';
@@ -396,6 +405,7 @@ const init = () => {
     'TITLE',
     'HISTORY',
   ];
+
   bmax = btxt.length;
   snBtn = sn;
 
@@ -450,7 +460,7 @@ window.addEventListener('load', init);
 const handleFileLoad = (event) => {
   const item = { ...event.item };
 
-  if (item.type == createjs.LoadQueue.SOUND) {
+  if (item.type === createjs.LoadQueue.SOUND) {
     startSound(item.id);
   }
 };
@@ -516,23 +526,24 @@ const checkButton = () => {
 
   for (let i = 0; i < bmax; i += 1) {
     sn = snBtn + i;
-    if (!spr[sn].visible) {
-      continue;
-    }
-    const pt = spr[sn].globalToLocal(stage.mouseX, stage.mouseY);
-    if (spr[sn].hitTest(pt.x, pt.y)) {
-      n = i;
+
+    if (spr[sn].visible) {
+      const pt = spr[sn].globalToLocal(stage.mouseX, stage.mouseY);
+
+      if (spr[sn].hitTest(pt.x, pt.y)) {
+        n = i;
+      }
     }
   }
 
-  if (activebutton == n) {
+  if (activebutton === n) {
     return;
   }
 
   activebutton = n;
 
   for (let i = 0; i < bmax; i += 1) {
-    if (i == activebutton) {
+    if (i === activebutton) {
       spr[snBtn + i].getChildAt(0).gotoAndStop('press');
     } else {
       spr[snBtn + i].getChildAt(0).gotoAndStop('btn');
@@ -580,8 +591,8 @@ const startTitle = () => {
 
   spr[snPmax].visible = true;
   for (i = 0; i < 7; i += 1) {
-    spr[snPmax].getChildByName('p' + i).color =
-      i == game.pmax - 2 ? '#aa0000' : '#cccccc';
+    spr[snPmax].getChildByName(`p${i}`).color =
+      i === game.pmax - 2 ? '#aa0000' : '#cccccc';
   }
 
   // button
@@ -606,7 +617,7 @@ const clickPmax = () => {
   let pmax = -1;
 
   for (let i = 0; i < 7; i += 1) {
-    const o = spr[snPmax].getChildByName('p' + i);
+    const o = spr[snPmax].getChildByName(`p${i}`);
     const pt = o.globalToLocal(stage.mouseX, stage.mouseY);
 
     if (
@@ -624,31 +635,30 @@ const clickPmax = () => {
   game.pmax = pmax;
 
   for (let i = 0; i < 7; i += 1) {
-    spr[snPmax].getChildByName('p' + i).color =
-      i == game.pmax - 2 ? '#aa0000' : '#cccccc';
+    spr[snPmax].getChildByName(`p${i}`).color =
+      i === game.pmax - 2 ? '#aa0000' : '#cccccc';
   }
   stage.update();
 };
 
 // Map creation screen
 const makeMap = () => {
-  let i;
-  let j;
   let n;
 
-  for (i = 0; i < snMax; i += 1) {
+  for (let i = 0; i < snMax; i += 1) {
     spr[i].visible = false;
   }
 
   game.make_map();
 
   // The order in which the dice are displayed
-  for (i = 0; i < game.AREA_MAX; i += 1) {
+  for (let i = 0; i < game.AREA_MAX; i += 1) {
     n = prio[i].an;
     prio[i].cpos = game.adat[n].cpos;
   }
-  for (i = 0; i < game.AREA_MAX - 1; i += 1) {
-    for (j = i; j < game.AREA_MAX; j += 1) {
+
+  for (let i = 0; i < game.AREA_MAX - 1; i += 1) {
+    for (let j = i; j < game.AREA_MAX; j += 1) {
       if (prio[i].cpos > prio[j].cpos) {
         let tmp = prio[i].an;
         prio[i].an = prio[j].an;
@@ -659,18 +669,19 @@ const makeMap = () => {
       }
     }
   }
-  for (i = 0; i < game.AREA_MAX; i += 1) {
+
+  for (let i = 0; i < game.AREA_MAX; i += 1) {
     n = prio[i].an;
     an2sn[n] = snDice + i;
   }
 
   // area filling
-  for (i = 0; i < game.AREA_MAX; i += 1) {
+  for (let i = 0; i < game.AREA_MAX; i += 1) {
     drawAreashape(snArea + i, i, 0);
   }
 
   // area dice
-  for (i = 0; i < game.AREA_MAX; i += 1) {
+  for (let i = 0; i < game.AREA_MAX; i += 1) {
     drawAreadice(snDice + i, prio[i].an);
   }
 
@@ -700,7 +711,7 @@ const makeMap = () => {
 };
 
 const drawAreashape = (sn, area, paintMode) => {
-  if (game.adat[area].size == 0) {
+  if (game.adat[area].size === 0) {
     spr[sn].visible = false;
     return;
   }
@@ -757,7 +768,10 @@ const drawAreashape = (sn, area, paintMode) => {
     c = game.adat[area].line_cel[cnt];
     d = game.adat[area].line_dir[cnt];
 
-    if (c == game.adat[area].line_cel[0] && d == game.adat[area].line_dir[0]) {
+    if (
+      c === game.adat[area].line_cel[0] &&
+      d === game.adat[area].line_dir[0]
+    ) {
       break;
     }
   }
@@ -765,10 +779,11 @@ const drawAreashape = (sn, area, paintMode) => {
 
 // area dice
 const drawAreadice = (sn, area) => {
-  if (game.adat[area].size == 0) {
+  if (game.adat[area].size === 0) {
     spr[sn].visible = false;
     return;
   }
+
   spr[sn].visible = true;
   const n = game.adat[area].cpos;
   spr[sn].x = Math.floor(cposX[n] + (6 * nume) / deno);
@@ -799,32 +814,32 @@ const drawPlayerData = () => {
   let c = 0;
   for (let i = 0; i < 8; i += 1) {
     const p = game.jun[i];
-    if (game.player[p].area_tc === 0) {
-      continue;
+
+    if (game.player[p].area_tc !== 0) {
+      const sn = snPlayer + i;
+      const w = (100 * nume) / deno;
+
+      const ox = viewW / 2 - ((pnum - 1) * w) / 2 + c * w;
+
+      spr[sn].x = ox; // -22*nume/deno;
+      spr[sn].y = yposArm;
+      spr[sn].getChildAt(0).gotoAndStop(`d${p}0`);
+      spr[sn].getChildAt(1).text = `${game.player[p].area_tc}`;
+      spr[sn].getChildAt(2).text = '';
+
+      if (game.player[p].stock > 0) {
+        spr[sn].getChildAt(2).text = `${game.player[p].stock}`;
+      }
+
+      if (i === game.ban) {
+        spr[snBan].x = ox;
+        spr[snBan].y = yposArm;
+        spr[snBan].gotoAndStop('ban');
+        spr[snBan].visible = true;
+      }
+
+      c += 1;
     }
-
-    const sn = snPlayer + i;
-    const w = (100 * nume) / deno;
-
-    const ox = viewW / 2 - ((pnum - 1) * w) / 2 + c * w;
-
-    spr[sn].x = ox; // -22*nume/deno;
-    spr[sn].y = yposArm;
-    spr[sn].getChildAt(0).gotoAndStop(`d${p}0`);
-    spr[sn].getChildAt(1).text = '' + game.player[p].area_tc;
-    spr[sn].getChildAt(2).text = '';
-
-    if (game.player[p].stock > 0) {
-      spr[sn].getChildAt(2).text = '' + game.player[p].stock;
-    }
-
-    if (i === game.ban) {
-      spr[snBan].x = ox;
-      spr[snBan].y = yposArm;
-      spr[snBan].gotoAndStop('ban');
-      spr[snBan].visible = true;
-    }
-    c += 1;
   }
 };
 
@@ -876,28 +891,26 @@ const clickedArea = () => {
   let sn;
 
   for (let i = 0; i < game.AREA_MAX; i += 1) {
-    if (game.adat[i].size === 0) {
-      continue;
-    }
-    sn = snArea + i;
-    const pt = spr[sn].globalToLocal(stage.mouseX, stage.mouseY);
+    if (game.adat[i].size !== 0) {
+      sn = snArea + i;
+      const pt = spr[sn].globalToLocal(stage.mouseX, stage.mouseY);
 
-    if (spr[sn].hitTest(pt.x, pt.y)) {
-      ret = i;
+      if (spr[sn].hitTest(pt.x, pt.y)) {
+        ret = i;
+      }
     }
   }
 
   for (let i = 0; i < game.AREA_MAX; i += 1) {
     const a = prio[i].an;
-    if (game.adat[a].size === 0) {
-      continue;
-    }
 
-    sn = snDice + i;
-    const pt = spr[sn].globalToLocal(stage.mouseX, stage.mouseY);
+    if (game.adat[a].size !== 0) {
+      sn = snDice + i;
+      const pt = spr[sn].globalToLocal(stage.mouseX, stage.mouseY);
 
-    if (spr[sn].hitTest(pt.x, pt.y)) {
-      ret = a;
+      if (spr[sn].hitTest(pt.x, pt.y)) {
+        ret = a;
+      }
     }
   }
 
@@ -1186,7 +1199,7 @@ const battleDice = () => {
 
   if (!f) {
     spr[snBattle].getChildByName(`n${bturn}`).visible = true;
-    spr[snBattle].getChildByName(`n${bturn}`).text = '' + battle[bturn].sum;
+    spr[snBattle].getChildByName(`n${bturn}`).text = `${battle[bturn].sum}`;
     bturn += 1;
 
     if (bturn >= 2) {
@@ -1283,7 +1296,7 @@ const startSupply = () => {
   for (let i = 0; i < game.STOCK_MAX; i += 1) {
     if (i < game.player[pn].stock) {
       spr[snSupply].getChildAt(i).visible = true;
-      spr[snSupply].getChildAt(i).gotoAndStop('d' + pn + '3');
+      spr[snSupply].getChildAt(i).gotoAndStop(`d${pn}3`);
     } else {
       spr[snSupply].getChildAt(i).visible = false;
     }
@@ -1358,8 +1371,6 @@ const supplyDice = () => {
   game.set_his(an, 0, 0);
 
   stage.update();
-
-  return;
 };
 
 const supplyWaiting = () => {
