@@ -1,0 +1,21 @@
+{
+  "name": "dice-reverse",
+  "version": "1.0.0",
+  "description": "dice board game reverse engineering",
+  "dependencies": {
+    "parcel": "2.8.2"
+  },
+  "devDependencies": {
+    "@parcel/transformer-sass": "2.8.2",
+    "eslint": "7.32.0",
+    "eslint-config-airbnb-base": "14.2.1",
+    "eslint-plugin-import": "2.25.2",
+    "nodemon": "2.0.13"
+  },
+  "scripts": {
+    "start": "parcel src/index.html",
+    "lint": "nodemon --exec eslint src/{game,main}.js"
+  },
+  "author": "",
+  "license": "ISC"
+}

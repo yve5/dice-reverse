@@ -1,21 +1,26 @@
 {
   "name": "dice-reverse",
-  "version": "1.0.0",
+  "version": "1.1.0",
+  "type": "module",
   "description": "dice board game reverse engineering",
+  "scripts": {
+    "dev": "vite",
+    "start": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest --coverage",
+    "coverage": "vitest run --coverage",
+    "deploy": "gh-pages -d dist"
+  },
   "dependencies": {
-    "parcel": "2.8.2"
+    "vite": "5.4.9",
+    "vite-plugin-eslint": "1.8.1",
+    "vitest": "2.1.2"
   },
   "devDependencies": {
-    "@parcel/transformer-sass": "2.8.2",
-    "eslint": "7.32.0",
-    "eslint-config-airbnb-base": "14.2.1",
-    "eslint-plugin-import": "2.25.2",
-    "nodemon": "2.0.13"
-  },
-  "scripts": {
-    "start": "parcel src/index.html",
-    "lint": "nodemon --exec eslint src/{game,main}.js"
-  },
-  "author": "",
-  "license": "ISC"
+    "@vitest/coverage-v8": "^2.1.2",
+    "eslint": "8.57.0",
+    "eslint-config-airbnb": "19.0.4",
+    "gh-pages": "6.2.0"
+  }
 }
