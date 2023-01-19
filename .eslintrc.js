@@ -31,6 +31,7 @@ module.exports = {
     'no-continue': 'off',
     'func-names': 'off',
     'new-cap': 'off',
+    'no-use-before-define': 'off',
 
     // to remove
     'func-style': ['error', 'expression', { allowArrowFunctions: true }],
@@ -45,7 +46,6 @@ module.exports = {
     // 'prefer-template': 'off',
     // 'prefer-const': 'off',
     // 'no-useless-return': 'off',
-    // 'no-use-before-define': 'off',
     // 'prefer-destructuring': 'off',
     // 'no-new-object': 'off',
     // camelcase: 'off',
