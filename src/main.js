@@ -1,3 +1,5 @@
+import { Game } from './game';
+
 let canvas;
 let stage;
 let builder;

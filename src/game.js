@@ -40,7 +40,7 @@ const HistoryData = function () {
   this.res = 0; // Result: 0 attacks failed, 1 occupied
 };
 
-const Game = function () {
+export const Game = function () {
   // Method Return the neighboring cell number
   this.next_cel = function (opos, dir) {
     const ox = opos % this.XMAX;
@@ -465,10 +465,10 @@ const Game = function () {
     }
 
     // Create data for area drawing lines
-    for (i = 0; i < this.AREA_MAX; i += 1) {
+    for (let i = 0; i < this.AREA_MAX; i += 1) {
       this.chk[i] = 0;
     }
-    for (i = 0; i < this.cel_max; i += 1) {
+    for (let i = 0; i < this.cel_max; i += 1) {
       const area = this.cel[i];
       if (area == 0) {
         continue;
