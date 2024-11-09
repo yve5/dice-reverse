@@ -133,8 +133,8 @@ export const Game = function () {
   this.STOCK_MAX = 64; // Maximum number of stocks
 
   // COM Thinking
-  this.list_from = new Array(this.AREA_MAX * this.AREA_MAX);
-  this.list_to = new Array(this.AREA_MAX * this.AREA_MAX);
+  this.listFrom = new Array(this.AREA_MAX * this.AREA_MAX);
+  this.listTo = new Array(this.AREA_MAX * this.AREA_MAX);
 
   // log
   this.his = new Array();
@@ -184,23 +184,23 @@ export const Game = function () {
     while (1) {
       let f = 0;
       for (let i = 1; i < this.AREA_MAX; i += 1) {
-        if (this.adat[i].size == 0) {
+        if (this.adat[i].size === 0) {
           continue;
         }
-        if (this.adat[i].arm != pn) {
+        if (this.adat[i].arm !== pn) {
           continue;
         }
         for (let j = 1; j < this.AREA_MAX; j += 1) {
-          if (this.adat[j].size == 0) {
+          if (this.adat[j].size === 0) {
             continue;
           }
-          if (this.adat[j].arm != pn) {
+          if (this.adat[j].arm !== pn) {
             continue;
           }
-          if (this.adat[i].join[j] == 0) {
+          if (this.adat[i].join[j] === 0) {
             continue;
           }
-          if (this.chk[j] == this.chk[i]) {
+          if (this.chk[j] === this.chk[i]) {
             continue;
           }
           if (this.chk[i] > this.chk[j]) {
@@ -215,7 +215,7 @@ export const Game = function () {
           break;
         }
       }
-      if (f == 0) {
+      if (f === 0) {
         break;
       }
     }
@@ -281,19 +281,19 @@ export const Game = function () {
         if (this.num[i] > min) {
           continue;
         }
-        if (this.rcel[i] == 0) {
+        if (this.rcel[i] === 0) {
           continue;
         }
         min = this.num[i];
         pos = i;
       }
-      if (min == 9999) {
+      if (min === 9999) {
         break;
       }
 
       // Start penetration
       const ret = this.percolate(pos, 8, an);
-      if (ret == 0) {
+      if (ret === 0) {
         break;
       }
       an += 1;
@@ -315,7 +315,7 @@ export const Game = function () {
         if (pos < 0) {
           continue;
         }
-        if (this.cel[pos] == 0) {
+        if (this.cel[pos] === 0) {
           f = 1;
         } else {
           a = this.cel[pos];
@@ -444,7 +444,7 @@ export const Game = function () {
       let c = 0;
 
       for (let i = 1; i < this.AREA_MAX; i += 1) {
-        if (this.adat[i].size == 0) {
+        if (this.adat[i].size === 0) {
           continue;
         }
         if (this.adat[i].arm >= 0) {
@@ -453,7 +453,7 @@ export const Game = function () {
         alist[c] = i;
         c += 1;
       }
-      if (c == 0) {
+      if (c === 0) {
         break;
       }
       const an = alist[Math.floor(Math.random() % c)];
@@ -470,7 +470,7 @@ export const Game = function () {
     }
     for (let i = 0; i < this.cel_max; i += 1) {
       const area = this.cel[i];
-      if (area == 0) {
+      if (area === 0) {
         continue;
       }
       if (this.chk[area] > 0) {
@@ -482,7 +482,7 @@ export const Game = function () {
         }
         const n = this.join[i].dir[k];
         if (n >= 0) {
-          if (this.cel[n] != area) {
+          if (this.cel[n] !== area) {
             this.set_area_line(i, k);
             this.chk[area] = 1;
           }
@@ -502,26 +502,26 @@ export const Game = function () {
     let p = 0; // player
     for (let i = 0; i < anum; i += 1) {
       const list = new Array(this.AREA_MAX);
-      let c = 0;
+      let ccc = 0;
 
       for (let j = 1; j < this.AREA_MAX; j += 1) {
-        if (this.adat[j].size == 0) {
+        if (this.adat[j].size === 0) {
           continue;
         }
-        if (this.adat[j].arm != p) {
+        if (this.adat[j].arm !== p) {
           continue;
         }
         if (this.adat[j].dice >= 8) {
           continue;
         }
-        list[c] = j;
-        c += 1;
+        list[ccc] = j;
+        ccc += 1;
       }
-      if (c == 0) {
+      if (ccc === 0) {
         break;
       }
-      const an = list[Math.floor(Math.random() * c)];
-      this.adat[an].dice += 1;
+      const an2 = list[Math.floor(Math.random() * ccc)];
+      this.adat[an2].dice += 1;
       p += 1;
       if (p >= this.pmax) {
         p = 0;
@@ -535,7 +535,6 @@ export const Game = function () {
       cmax = 3;
     }
 
-    let i, k;
     let opos = pt; // start cell
 
     // adjacent flag
@@ -549,8 +548,8 @@ export const Game = function () {
       c += 1;
 
       // surrounding cell
-      for (i = 0; i < 6; i += 1) {
-        const pos = this.join[opos].dir[i];
+      for (let iii = 0; iii < 6; iii += 1) {
+        const pos = this.join[opos].dir[iii];
         if (pos < 0) {
           continue;
         }
@@ -559,20 +558,20 @@ export const Game = function () {
 
       // Make the next cell the smallest serial number in the surrounding cells.
       let min = 9999;
-      for (let i = 0; i < this.cel_max; i += 1) {
-        if (this.next_f[i] == 0) {
+      for (let iii = 0; iii < this.cel_max; iii += 1) {
+        if (this.next_f[iii] === 0) {
           continue; // They're not adjacent.
         }
-        if (this.cel[i] > 0) {
+        if (this.cel[iii] > 0) {
           continue; // Already in area
         }
-        if (this.num[i] > min) {
+        if (this.num[iii] > min) {
           continue; // No minimum serial number
         }
-        min = this.num[i];
-        opos = i;
+        min = this.num[iii];
+        opos = iii;
       }
-      if (min == 9999) {
+      if (min === 9999) {
         break;
       }
       if (c >= cmax) {
@@ -581,19 +580,19 @@ export const Game = function () {
     }
 
     // Add adjacent cells
-    for (let i = 0; i < this.cel_max; i += 1) {
-      if (this.next_f[i] == 0) {
+    for (let iii = 0; iii < this.cel_max; iii += 1) {
+      if (this.next_f[iii] === 0) {
         continue;
       }
-      if (this.cel[i] > 0) {
+      if (this.cel[iii] > 0) {
         continue; // Already in area
       }
-      this.cel[i] = an;
+      this.cel[iii] = an;
       c += 1;
 
       // In addition, make adjacent cells candidates for the next area.
-      for (let k = 0; k < 6; k += 1) {
-        const pos = this.join[i].dir[k];
+      for (let kkk = 0; kkk < 6; kkk += 1) {
+        const pos = this.join[iii].dir[kkk];
         if (pos < 0) {
           continue;
         }
@@ -604,9 +603,9 @@ export const Game = function () {
   };
 
   // Area drawing line data creation
-  this.set_area_line = function (old_cel, old_dir) {
-    let c = old_cel;
-    let d = old_dir;
+  this.set_area_line = function (oldCel, oldDir) {
+    let c = oldCel;
+    let d = oldDir;
     const area = this.cel[c]; // Area Number
     let cnt = 0;
     this.adat[area].line_cel[cnt] = c;
@@ -620,7 +619,7 @@ export const Game = function () {
       }
       const n = this.join[c].dir[d];
       if (n >= 0) {
-        if (this.cel[n] == area) {
+        if (this.cel[n] === area) {
           // If neighbors are in the same area, move cell, direction minus 2
           c = n;
           d -= 2;
@@ -632,7 +631,7 @@ export const Game = function () {
       this.adat[area].line_cel[cnt] = c;
       this.adat[area].line_dir[cnt] = d;
       cnt += 1;
-      if (c == old_cel && d == old_dir) {
+      if (c === oldCel && d === oldDir) {
         break;
       }
     }
@@ -648,7 +647,7 @@ export const Game = function () {
 
     let sum = 0;
     for (let i = 1; i < this.AREA_MAX; i += 1) {
-      if (this.adat[i].size == 0) {
+      if (this.adat[i].size === 0) {
         continue;
       }
       const arm = this.adat[i].arm;
@@ -681,16 +680,16 @@ export const Game = function () {
     }
 
     // Make a list of attackers and attack destinations and decide at random.
-    const list_from = new Array(this.AREA_MAX * this.AREA_MAX);
-    const list_to = new Array(this.AREA_MAX * this.AREA_MAX);
+    const listFrom = new Array(this.AREA_MAX * this.AREA_MAX);
+    const listTo = new Array(this.AREA_MAX * this.AREA_MAX);
     const pn = this.jun[this.ban];
     let lc = 0;
 
     for (let i = 1; i < this.AREA_MAX; i += 1) {
-      if (this.adat[i].size == 0) {
+      if (this.adat[i].size === 0) {
         continue;
       }
-      if (this.adat[i].arm != pn) {
+      if (this.adat[i].arm !== pn) {
         continue;
       }
       if (this.adat[i].dice <= 1) {
@@ -698,18 +697,18 @@ export const Game = function () {
       }
 
       for (let j = 1; j < this.AREA_MAX; j += 1) {
-        if (this.adat[j].size == 0) {
+        if (this.adat[j].size === 0) {
           continue;
         }
-        if (this.adat[j].arm == pn) {
+        if (this.adat[j].arm === pn) {
           continue;
         }
-        if (this.adat[i].join[j] == 0) {
+        if (this.adat[i].join[j] === 0) {
           continue;
         }
         if (top >= 0) {
           // There's a dunce, and then there's a dunce to two dunces.
-          if (this.adat[i].arm != top && this.adat[j].arm != top) {
+          if (this.adat[i].arm !== top && this.adat[j].arm !== top) {
             continue;
           }
         }
@@ -717,34 +716,34 @@ export const Game = function () {
           continue; // Many enemies
         }
         // If you have the same number of enemies
-        if (this.adat[j].dice == this.adat[i].dice) {
+        if (this.adat[j].dice === this.adat[i].dice) {
           const en = this.adat[j].arm;
           let f = 0;
-          if (this.player[pn].dice_jun == 0) {
+          if (this.player[pn].dice_jun === 0) {
             f = 1; // When I'm on top, I'll set it off.
           }
-          if (this.player[en].dice_jun == 0) {
+          if (this.player[en].dice_jun === 0) {
             f = 1; // When the opponent is on top, set him up.
           }
           if (Math.random() * 10 > 1) {
             f = 1;
           }
-          if (f == 0) {
+          if (f === 0) {
             continue;
           }
         }
-        list_from[lc] = i;
-        list_to[lc] = j;
+        listFrom[lc] = i;
+        listTo[lc] = j;
         lc += 1;
       }
     }
-    if (lc == 0) {
+    if (lc === 0) {
       return 0;
     }
 
     const n = Math.floor(Math.random() * lc);
-    this.area_from = list_from[n];
-    this.area_to = list_to[n];
+    this.area_from = listFrom[n];
+    this.area_to = listTo[n];
   };
 
   // Add to history

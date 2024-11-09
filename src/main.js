@@ -1,4 +1,8 @@
 import { Game } from './game';
+import { sayHello } from './utils';
+import { SOUND_MANIFEST } from './resources/constants';
+
+sayHello();
 
 let canvas;
 let stage;
@@ -102,17 +106,6 @@ let replayC = 0;
 
 // Sound related
 let soundon = true;
-// let soundon = false;
-const manifest = [
-  { src: '/dice-reverse/sound/button.wav', id: 'snd_button' },
-  { src: '/dice-reverse/sound/clear.wav', id: 'snd_clear' },
-  { src: '/dice-reverse/sound/click.wav', id: 'snd_click' },
-  { src: '/dice-reverse/sound/dice.wav', id: 'snd_dice' },
-  { src: '/dice-reverse/sound/fail.wav', id: 'snd_fail' },
-  { src: '/dice-reverse/sound/myturn.wav', id: 'snd_myturn' },
-  { src: '/dice-reverse/sound/over.wav', id: 'snd_over' },
-  { src: '/dice-reverse/sound/success.wav', id: 'snd_success' },
-];
 
 // Link
 const toppage = () => {
@@ -1040,7 +1033,7 @@ const init = () => {
     // Load sound in the case of a PC
     const queue = new createjs.LoadQueue(false);
     queue.installPlugin(createjs.Sound);
-    queue.loadManifest(manifest, true);
+    queue.loadManifest(SOUND_MANIFEST, true);
     queue.addEventListener('fileload', handleFileLoad);
     queue.addEventListener('complete', handleComplete);
   } else {

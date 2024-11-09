@@ -2,7 +2,7 @@ module.exports = {
   root: true,
   env: { browser: true, es2020: true, jest: true },
   extends: ['airbnb'],
-  ignorePatterns: ['dist', 'build', 'lib', '.eslintrc.cjs'],
+  ignorePatterns: ['dist', 'build', 'lib', '.eslintrc.cjs', 'src/game.js'],
   parserOptions: { ecmaVersion: 'latest', sourceType: 'module' },
   settings: { react: { version: '18.2' } },
   rules: {
@@ -57,5 +57,18 @@ module.exports = {
     'no-unused-vars': 'warn',
     'no-multiple-empty-lines': 'warn',
     'prefer-const': 'warn',
+
+    // to delete
+    'new-cap': 'none',
+    'no-continue': 'none',
+    'linebreak-style': 'none',
+    'no-use-before-define': 'none',
+    'func-names': 'none',
+  },
+
+  // to delete
+  globals: {
+    lib: 'readonly',
+    createjs: 'readonly',
   },
 };
