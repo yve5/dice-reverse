@@ -1,1 +1,3 @@
-export const sayHello = () => console.log('Hello World');
+import { nextCell } from './NextCell';
+
+export { nextCell };

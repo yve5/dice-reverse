@@ -1,8 +1,5 @@
-import { Game } from './game';
-import { sayHello } from './utils';
 import { SOUND_MANIFEST } from './resources/constants';
-
-sayHello();
+import { Game } from './game';
 
 let canvas;
 let stage;

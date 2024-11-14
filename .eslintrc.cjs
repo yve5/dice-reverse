@@ -60,10 +60,11 @@ module.exports = {
 
     // to delete
     'new-cap': 'none',
+    'func-names': 'none',
     'no-continue': 'none',
+    'default-case': 'none',
     'linebreak-style': 'none',
     'no-use-before-define': 'none',
-    'func-names': 'none',
   },
 
   // to delete
