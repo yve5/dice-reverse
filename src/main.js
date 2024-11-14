@@ -1,5 +1,5 @@
-import { SOUND_MANIFEST } from './feature/resources/constants';
-import { Game } from './feature/game';
+import { Game, GAME_XMAX, GAME_YMAX } from './feature/game';
+import { SOUND_MANIFEST } from './resources/constants';
 
 let canvas;
 let stage;
@@ -751,8 +751,8 @@ const init = () => {
 
   // Cell position
   c = 0;
-  for (let i = 0; i < game.YMAX; i += 1) {
-    for (let j = 0; j < game.XMAX; j += 1) {
+  for (let i = 0; i < GAME_YMAX; i += 1) {
+    for (let j = 0; j < GAME_XMAX; j += 1) {
       cposX[c] = j * celW;
       if (i % 2) {
         cposX[c] += celW / 2;
@@ -766,7 +766,7 @@ const init = () => {
   snArea = sn;
   for (let i = 0; i < game.AREA_MAX + 2; i += 1) {
     spr[sn] = new createjs.Shape();
-    spr[sn].x = viewW / 2 - (game.XMAX * celW) / 2 - celW / 4;
+    spr[sn].x = viewW / 2 - (GAME_XMAX * celW) / 2 - celW / 4;
     spr[sn].y = (50 * nume) / deno;
     stage.addChild(spr[sn]);
     sn += 1;

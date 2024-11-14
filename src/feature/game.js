@@ -2,11 +2,10 @@ import { GAME_XMAX, GAME_YMAX, GAME_AREA_MAX } from './resources/constants';
 import { AreaData, HistoryData, JoinData, PlayerData } from './entities';
 import { nextCell } from './utils';
 
+export { GAME_XMAX, GAME_YMAX };
+
 export const Game = function () {
   // Cell data
-  this.XMAX = GAME_XMAX;
-  this.YMAX = GAME_YMAX;
-
   this.cel_max = GAME_XMAX * GAME_YMAX;
   this.cel = new Array(this.cel_max);
 
