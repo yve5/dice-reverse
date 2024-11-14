@@ -12,3 +12,7 @@ export const SOUND_MANIFEST = [
   { src: `${SOUND_PATH}over.wav`, id: 'snd_over' },
   { src: `${SOUND_PATH}success.wav`, id: 'snd_success' },
 ];
+
+export const GAME_XMAX = 28;
+export const GAME_YMAX = 32;
+export const GAME_AREA_MAX = 32;

@@ -1,12 +1,13 @@
-import { AreaData, HistoryData, JoinData, PlayerData } from './bulk';
-// import { GAME_XMAX } from './resources/constants';
+import { GAME_XMAX, GAME_YMAX, GAME_AREA_MAX } from './resources/constants';
+import { AreaData, HistoryData, JoinData, PlayerData } from './entities';
 import { nextCell } from './utils';
 
 export const Game = function () {
   // Cell data
-  this.XMAX = 28;
-  this.YMAX = 32;
-  this.cel_max = this.XMAX * this.YMAX;
+  this.XMAX = GAME_XMAX;
+  this.YMAX = GAME_YMAX;
+
+  this.cel_max = GAME_XMAX * GAME_YMAX;
   this.cel = new Array(this.cel_max);
 
   // Array with adjacent cells
@@ -14,13 +15,13 @@ export const Game = function () {
   for (let i = 0; i < this.cel_max; i += 1) {
     this.join[i] = new JoinData();
     for (let j = 0; j < 6; j += 1) {
-      this.join[i].dir[j] = nextCell(i, j, this.XMAX, this.YMAX);
+      this.join[i].dir[j] = nextCell(i, j, GAME_XMAX, GAME_YMAX);
     }
   }
 
   // Area Data
-  this.AREA_MAX = 32; // Maximum number of areas
-  this.adat = new Array();
+  this.AREA_MAX = GAME_AREA_MAX; // Maximum number of areas
+  this.adat = [];
   for (let i = 0; i < 32; i += 1) {
     this.adat[i] = new AreaData();
   }
@@ -33,9 +34,9 @@ export const Game = function () {
   this.rcel = new Array(this.cel_max); // adjacent cell
 
   this.next_f = new Array(this.cel_max); // Perimeter cells used during penetration
-  this.alist = new Array(this.AREA_MAX); // Area List
-  this.chk = new Array(this.AREA_MAX); // For area drawing lines
-  this.tc = new Array(this.AREA_MAX); // Used for number of adjacent areas
+  this.alist = new Array(GAME_AREA_MAX); // Area List
+  this.chk = new Array(GAME_AREA_MAX); // For area drawing lines
+  this.tc = new Array(GAME_AREA_MAX); // Used for number of adjacent areas
 
   // game data
   this.pmax = 7; // Number of players
@@ -52,16 +53,16 @@ export const Game = function () {
   this.STOCK_MAX = 64; // Maximum number of stocks
 
   // COM Thinking
-  this.listFrom = new Array(this.AREA_MAX * this.AREA_MAX);
-  this.listTo = new Array(this.AREA_MAX * this.AREA_MAX);
+  this.listFrom = new Array(GAME_AREA_MAX * GAME_AREA_MAX);
+  this.listTo = new Array(GAME_AREA_MAX * GAME_AREA_MAX);
 
   // log
-  this.his = new Array();
+  this.his = [];
   this.his_c = 0;
 
   // initialization
-  this.his_arm = new Array(this.AREA_MAX);
-  this.his_dice = new Array(this.AREA_MAX);
+  this.his_arm = new Array(GAME_AREA_MAX);
+  this.his_dice = new Array(GAME_AREA_MAX);
 
   // Start the game (create a map, set pmax, user, etc.)
   this.start_game = function () {
@@ -87,7 +88,7 @@ export const Game = function () {
 
     // log
     this.his_c = 0;
-    for (let i = 0; i < this.AREA_MAX; i += 1) {
+    for (let i = 0; i < GAME_AREA_MAX; i += 1) {
       this.his_arm[i] = this.adat[i].arm;
       this.his_dice[i] = this.adat[i].dice;
     }
@@ -96,20 +97,20 @@ export const Game = function () {
   // Maximum number of adjacent areas
   this.set_area_tc = function (pn) {
     this.player[pn].area_tc = 0;
-    for (let i = 0; i < this.AREA_MAX; i += 1) {
+    for (let i = 0; i < GAME_AREA_MAX; i += 1) {
       this.chk[i] = i;
     }
 
     while (1) {
       let f = 0;
-      for (let i = 1; i < this.AREA_MAX; i += 1) {
+      for (let i = 1; i < GAME_AREA_MAX; i += 1) {
         if (this.adat[i].size === 0) {
           continue;
         }
         if (this.adat[i].arm !== pn) {
           continue;
         }
-        for (let j = 1; j < this.AREA_MAX; j += 1) {
+        for (let j = 1; j < GAME_AREA_MAX; j += 1) {
           if (this.adat[j].size === 0) {
             continue;
           }
@@ -139,21 +140,21 @@ export const Game = function () {
       }
     }
 
-    for (let i = 0; i < this.AREA_MAX; i += 1) {
+    for (let i = 0; i < GAME_AREA_MAX; i += 1) {
       this.tc[i] = 0;
     }
 
-    for (let i = 1; i < this.AREA_MAX; i += 1) {
-      if (this.adat[i].size == 0) {
+    for (let i = 1; i < GAME_AREA_MAX; i += 1) {
+      if (this.adat[i].size === 0) {
         continue;
       }
-      if (this.adat[i].arm != pn) {
+      if (this.adat[i].arm !== pn) {
         continue;
       }
       this.tc[this.chk[i]] += 1;
     }
     let max = 0;
-    for (let i = 0; i < this.AREA_MAX; i += 1) {
+    for (let i = 0; i < GAME_AREA_MAX; i += 1) {
       if (this.tc[i] > max) {
         max = this.tc[i];
       }
@@ -216,7 +217,7 @@ export const Game = function () {
         break;
       }
       an += 1;
-      if (an >= this.AREA_MAX) {
+      if (an >= GAME_AREA_MAX) {
         break;
       }
     }
@@ -240,13 +241,13 @@ export const Game = function () {
           a = this.cel[pos];
         }
       }
-      if (f == 0) {
+      if (f === 0) {
         this.cel[i] = a;
       }
     }
 
     // Area data initialization
-    for (let i = 0; i < this.AREA_MAX; i += 1) {
+    for (let i = 0; i < GAME_AREA_MAX; i += 1) {
       this.adat[i] = new AreaData();
     }
 
@@ -258,30 +259,30 @@ export const Game = function () {
       }
     }
     // Erase an area of 10 or less.
-    for (let i = 1; i < this.AREA_MAX; i += 1) {
+    for (let i = 1; i < GAME_AREA_MAX; i += 1) {
       if (this.adat[i].size <= 5) {
         this.adat[i].size = 0;
       }
     }
     for (let i = 0; i < this.cel_max; i += 1) {
       an = this.cel[i];
-      if (this.adat[an].size == 0) {
+      if (this.adat[an].size === 0) {
         this.cel[i] = 0;
       }
     }
 
     // Decide on a central location for the area.
-    for (let i = 1; i < this.AREA_MAX; i += 1) {
-      this.adat[i].left = this.XMAX;
+    for (let i = 1; i < GAME_AREA_MAX; i += 1) {
+      this.adat[i].left = GAME_XMAX;
       this.adat[i].right = -1;
-      this.adat[i].top = this.YMAX;
+      this.adat[i].top = GAME_YMAX;
       this.adat[i].bottom = -1;
       this.adat[i].len_min = 9999;
     }
 
     c = 0;
-    for (let i = 0; i < this.YMAX; i += 1) {
-      for (let j = 0; j < this.XMAX; j += 1) {
+    for (let i = 0; i < GAME_YMAX; i += 1) {
+      for (let j = 0; j < GAME_XMAX; j += 1) {
         an = this.cel[c];
         if (an > 0) {
           if (j < this.adat[an].left) {
@@ -300,7 +301,7 @@ export const Game = function () {
         c += 1;
       }
     }
-    for (let i = 1; i < this.AREA_MAX; i += 1) {
+    for (let i = 1; i < GAME_AREA_MAX; i += 1) {
       this.adat[i].cx = Math.floor(
         (this.adat[i].left + this.adat[i].right) / 2
       );
@@ -309,10 +310,13 @@ export const Game = function () {
       );
     }
     c = 0;
-    let x, y, len;
 
-    for (let i = 0; i < this.YMAX; i += 1) {
-      for (let j = 0; j < this.XMAX; j += 1) {
+    let len;
+    let x;
+    let y;
+
+    for (let i = 0; i < GAME_YMAX; i += 1) {
+      for (let j = 0; j < GAME_XMAX; j += 1) {
         an = this.cel[c];
 
         if (an > 0) {
@@ -332,7 +336,7 @@ export const Game = function () {
             const pos = this.join[c].dir[k];
             if (pos > 0) {
               const an2 = this.cel[pos];
-              if (an2 != an) {
+              if (an2 !== an) {
                 f = 1;
                 // Create adjacent data as well
                 this.adat[an].join[an2] = 1;
@@ -345,7 +349,7 @@ export const Game = function () {
           // Use the closest distance as the central location
           if (len < this.adat[an].len_min) {
             this.adat[an].len_min = len;
-            this.adat[an].cpos = i * this.XMAX + j;
+            this.adat[an].cpos = i * GAME_XMAX + j;
           }
         }
         c += 1;
@@ -353,30 +357,30 @@ export const Game = function () {
     }
 
     // Decide on area troops
-    for (let i = 0; i < this.AREA_MAX; i += 1) {
+    for (let i = 0; i < GAME_AREA_MAX; i += 1) {
       this.adat[i].arm = -1;
     }
     let arm = 0; // a subordinate (army)
-    const alist = new Array(this.AREA_MAX); // Area List
+    const alist = new Array(GAME_AREA_MAX); // Area List
 
     while (1) {
-      let c = 0;
+      let ccc = 0;
 
-      for (let i = 1; i < this.AREA_MAX; i += 1) {
+      for (let i = 1; i < GAME_AREA_MAX; i += 1) {
         if (this.adat[i].size === 0) {
           continue;
         }
         if (this.adat[i].arm >= 0) {
           continue;
         }
-        alist[c] = i;
-        c += 1;
+        alist[ccc] = i;
+        ccc += 1;
       }
-      if (c === 0) {
+      if (ccc === 0) {
         break;
       }
-      const an = alist[Math.floor(Math.random() % c)];
-      this.adat[an].arm = arm;
+      const an2 = alist[Math.floor(Math.random() % ccc)];
+      this.adat[an2].arm = arm;
       arm += 1;
       if (arm >= this.pmax) {
         arm = 0;
@@ -384,7 +388,7 @@ export const Game = function () {
     }
 
     // Create data for area drawing lines
-    for (let i = 0; i < this.AREA_MAX; i += 1) {
+    for (let i = 0; i < GAME_AREA_MAX; i += 1) {
       this.chk[i] = 0;
     }
     for (let i = 0; i < this.cel_max; i += 1) {
@@ -411,7 +415,7 @@ export const Game = function () {
 
     // dice layout
     let anum = 0;
-    for (let i = 1; i < this.AREA_MAX; i += 1) {
+    for (let i = 1; i < GAME_AREA_MAX; i += 1) {
       if (this.adat[i].size > 0) {
         anum += 1;
         this.adat[i].dice = 1;
@@ -420,10 +424,10 @@ export const Game = function () {
     anum *= this.put_dice - 1;
     let p = 0; // player
     for (let i = 0; i < anum; i += 1) {
-      const list = new Array(this.AREA_MAX);
+      const list = new Array(GAME_AREA_MAX);
       let ccc = 0;
 
-      for (let j = 1; j < this.AREA_MAX; j += 1) {
+      for (let j = 1; j < GAME_AREA_MAX; j += 1) {
         if (this.adat[j].size === 0) {
           continue;
         }
@@ -565,7 +569,7 @@ export const Game = function () {
     }
 
     let sum = 0;
-    for (let i = 1; i < this.AREA_MAX; i += 1) {
+    for (let i = 1; i < GAME_AREA_MAX; i += 1) {
       if (this.adat[i].size === 0) {
         continue;
       }
@@ -599,12 +603,12 @@ export const Game = function () {
     }
 
     // Make a list of attackers and attack destinations and decide at random.
-    const listFrom = new Array(this.AREA_MAX * this.AREA_MAX);
-    const listTo = new Array(this.AREA_MAX * this.AREA_MAX);
+    const listFrom = new Array(GAME_AREA_MAX * GAME_AREA_MAX);
+    const listTo = new Array(GAME_AREA_MAX * GAME_AREA_MAX);
     const pn = this.jun[this.ban];
     let lc = 0;
 
-    for (let i = 1; i < this.AREA_MAX; i += 1) {
+    for (let i = 1; i < GAME_AREA_MAX; i += 1) {
       if (this.adat[i].size === 0) {
         continue;
       }
@@ -615,7 +619,7 @@ export const Game = function () {
         continue;
       }
 
-      for (let j = 1; j < this.AREA_MAX; j += 1) {
+      for (let j = 1; j < GAME_AREA_MAX; j += 1) {
         if (this.adat[j].size === 0) {
           continue;
         }

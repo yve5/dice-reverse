@@ -1,5 +1,5 @@
-import { SOUND_MANIFEST } from './resources/constants';
-import { Game } from './game';
+import { SOUND_MANIFEST } from './feature/resources/constants';
+import { Game } from './feature/game';
 
 let canvas;
 let stage;
