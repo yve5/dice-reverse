@@ -1,6 +1,6 @@
-import { GAME_XMAX, GAME_YMAX, GAME_AREA_MAX } from './resources/constants';
-import { AreaData, HistoryData, JoinData, PlayerData } from './entities';
-import { nextCell } from './utils';
+import { AreaData, HistoryData, JoinData, PlayerData } from '../entities';
+import { GAME_XMAX, GAME_YMAX, GAME_AREA_MAX } from '../resources/game';
+import { nextCell } from '../utils';
 
 export { GAME_XMAX, GAME_YMAX };
 

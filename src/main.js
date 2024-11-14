@@ -1,5 +1,6 @@
-import { Game, GAME_XMAX, GAME_YMAX } from './feature/game';
-import { SOUND_MANIFEST } from './resources/constants';
+import { Game, GAME_XMAX, GAME_YMAX } from './features/components/game';
+import { SOUND_MANIFEST } from './features/resources/main';
+import { Battle } from './features/entities';
 
 let canvas;
 let stage;
@@ -85,16 +86,6 @@ let activebutton = -1;
 const btnFunc = [];
 
 // battle class
-const Battle = function () {
-  this.dn = 0; // Dice number (position to stop)
-  this.arm = 0; // Dice color
-  this.dmax = 0; // Number of Dice
-  this.deme = [0, 0, 0, 0, 0, 0, 0, 0];
-  this.sum = 0;
-  this.fin = [0, 0, 0, 0, 0, 0, 0, 0]; // end flag
-  this.usedice = [0, 1, 2, 3, 4, 5, 6, 7]; // Dice to use
-};
-
 const battle = [];
 let bturn = 0; // Turn for Battle
 
@@ -142,7 +133,7 @@ const mouseUpListner = (e) => {
   canvas.style.cursor = 'default'; // Changing the mouse cursor
 
   if (activebutton >= 0 && btnFunc[activebutton] != null) {
-    playSound('snd_button');
+    playSound('button');
     btnFunc[activebutton]();
   }
 };
@@ -337,7 +328,7 @@ const nextPlayer = () => {
     }
   }
   if (game.jun[game.ban] === game.user) {
-    playSound('snd_myturn');
+    playSound('myturn');
   }
 
   startPlayer();
@@ -500,7 +491,7 @@ const secondClick = () => {
   game.area_to = an;
   drawAreashape(snTo, an, 1);
   stage.update();
-  playSound('snd_click');
+  playSound('click');
   startBattle();
 };
 
@@ -523,7 +514,7 @@ const firstClick = () => {
   game.area_from = an;
   drawAreashape(snFrom, an, 1);
 
-  playSound('snd_click');
+  playSound('click');
 
   stage.update();
   clickFunc = secondClick;
@@ -1290,7 +1281,7 @@ const battleDice = () => {
   }
 
   if (soundflg) {
-    playSound('snd_dice');
+    playSound('dice');
   }
 
   stage.update();
@@ -1322,10 +1313,10 @@ const afterBattle = () => {
     game.adat[game.area_to].arm = arm0;
     game.set_area_tc(arm0);
     game.set_area_tc(arm1);
-    playSound('snd_success');
+    playSound('success');
   } else {
     game.adat[game.area_from].dice = 1;
-    playSound('snd_fail');
+    playSound('fail');
   }
 
   drawAreashape(snArea + game.area_to, game.area_to, 0);
@@ -1382,7 +1373,7 @@ const gameover = () => {
     spr[snGameover].getChildByName('bg').alpha = a;
 
     if (a > 0.8) {
-      playSound('snd_over');
+      playSound('over');
       waitcount = 0;
       stat += 1;
     }
@@ -1442,7 +1433,7 @@ const win = () => {
   }
 
   if (a === 10) {
-    playSound('snd_clear');
+    playSound('clear');
   }
 
   if (a >= 40) {
@@ -1504,10 +1495,10 @@ const playHistory = () => {
         game.adat[an1].dice = game.adat[an0].dice - 1;
         game.adat[an0].dice = 1;
         game.adat[an1].arm = game.adat[an0].arm;
-        playSound('snd_success');
+        playSound('success');
       } else {
         game.adat[an0].dice = 1;
-        playSound('snd_fail');
+        playSound('fail');
       }
       spr[snFrom].visible = false;
       spr[snTo].visible = false;
